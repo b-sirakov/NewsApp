@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/bbc_news"
+            android:title="@string/bbc_news" />
+        <item
+            android:id="@+id/cnn_news"
+            android:title="@string/cnn_news" />
+    </group>
+
+    <item android:title="@string/categories">
+        <menu>
+            <item
+                android:id="@+id/business_category"
+                android:title="@string/business_category" />
+            <item
+                android:id="@+id/entertainment_category"
+                android:title="@string/entertainment_category" />
+            <item
+                android:id="@+id/health_category"
+                android:title="@string/health_category" />
+            <item
+                android:id="@+id/politics_category"
+                android:title="@string/politics_category" />
+            <item
+                android:id="@+id/sports_category"
+                android:title="@string/sports_category" />
+            <item
+                android:id="@+id/technology_category"
+                android:title="@string/technology_category" />
+        </menu>
+    </item>
+
+</menu>

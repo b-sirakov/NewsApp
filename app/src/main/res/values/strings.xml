@@ -6,15 +6,22 @@
     <string name="author">Author</string>
     <string name="text">Text</string>
 
-    <!-- used in menu -->
-    <string name="settings">Settings</string>
-    <string name="feedback">Feedback</string>
-
     <!-- used in navigation drawer-->
-    <string-array name="navigation_drawer_options">
-        <item> BBC </item>
-        <item> CNN </item>
-        <item> FOX </item>
-    </string-array>
+    <string name="bbc_news">BBC news</string>
+    <string name="cnn_news">CNN news</string>
+    <string name="categories">Categories</string>
+    <string name="business_category">Business</string>
+    <string name="entertainment_category">Entertainment</string>
+    <string name="health_category">Health</string>
+    <string name="politics_category">Politics</string>
+    <string name="sports_category">Sports</string>
+    <string name="technology_category">Technology</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="feedback">Feedback</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
 
 </resources>
