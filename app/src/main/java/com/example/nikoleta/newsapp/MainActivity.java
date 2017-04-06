@@ -20,10 +20,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(R.string.app_name);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setTitle(R.string.app_name);
 
+
+        int a=5;
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_main_activity);
         final ArrayList<News> newsList = new ArrayList<>(); // array list?
         final NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(this, newsList);
