@@ -3,7 +3,6 @@ package com.example.nikoleta.newsapp;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
 import com.example.nikoleta.newsapp.adapters.NewsRecyclerViewAdapter;
@@ -25,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
 //        getSupportActionBar().setTitle(R.string.app_name);
 
 
-        int a=5;
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_main_activity);
         final ArrayList<News> newsList = new ArrayList<>(); // array list?
         final NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(this, newsList);
