@@ -31,6 +31,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         TextView author;
         TextView text;
 
+
         public NewsViewHolder(View row) {
             super(row);
             this.row = row;
@@ -56,7 +57,9 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         holder.title.setText(news.getTitle());
         holder.author.setText(news.getAuthor());
         holder.text.setText(news.getText());
+        holder.image.setImageBitmap(news.getBitmapIMG());
     }
+
 
     @Override
     public int getItemCount() {
