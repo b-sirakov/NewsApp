@@ -1,5 +1,6 @@
 package com.example.nikoleta.newsapp.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.nikoleta.newsapp.MainActivity;
 import com.example.nikoleta.newsapp.R;
 import com.example.nikoleta.newsapp.model.News;
 
@@ -16,10 +18,12 @@ import java.util.List;
 
 public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerViewAdapter.NewsViewHolder>{
 
+    private int counter;
     private Context context;
     private List<News> news = new ArrayList<News>();
 
     public NewsRecyclerViewAdapter(Context context, List news){
+        counter=0;
         this.context = context;
         this.news = news;
     }
@@ -54,10 +58,28 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
     public void onBindViewHolder(NewsRecyclerViewAdapter.NewsViewHolder holder, int position) {
         News news = this.news.get(position);
         // TODO add an image
+        if(position>0&&position%5==0){
+            if(counter<position) {
+                counter=position;
+                MainActivity ma = (MainActivity) context;
+                MainActivity.DownloadSmallAmountOfImages downloadTask = ma.new DownloadSmallAmountOfImages();
+                downloadTask.execute(counter);
+            }
+
+        }
         holder.title.setText(news.getTitle());
         holder.author.setText(news.getAuthor());
         holder.text.setText(news.getText());
-        holder.image.setImageBitmap(news.getBitmapIMG());
+        if(news.getBitmapIMG()==null){
+            if(news.getAuthor().equals("cnn.com")) {
+                holder.image.setImageResource(R.drawable.cnn);
+            }
+            if(news.getAuthor().equals("bbc.co.uk")){
+                holder.image.setImageResource(R.drawable.bbc);
+            }
+        }else {
+            holder.image.setImageBitmap(news.getBitmapIMG());
+        }
     }
 
 
