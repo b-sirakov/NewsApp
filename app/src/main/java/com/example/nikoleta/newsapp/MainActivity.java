@@ -1,44 +1,35 @@
 package com.example.nikoleta.newsapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.nikoleta.newsapp.adapters.NewsRecyclerViewAdapter;
 import com.example.nikoleta.newsapp.model.News;
+import com.example.nikoleta.newsapp.tasks.DownloadAndParseTask;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -46,8 +37,9 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private static CustomLayoutManager clm;
     private ProgressBar progBar;
-    private StringBuilder jsonText;
-    private ArrayList<News> newsList;
+    private ProgressBar progBar2;
+    private static StringBuilder jsonText;
+    public static ArrayList<News> newsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,18 +48,20 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        recyclerView= (RecyclerView) findViewById(R.id.recycler_view_main_activity);
         progBar= (ProgressBar) findViewById(R.id.progress_bar);
+        progBar2= (ProgressBar) findViewById(R.id.progress_bar2);
+        clm=new CustomLayoutManager(this);
+
         newsList = new ArrayList<>();
         jsonText=new StringBuilder("");
-
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent =new Intent(MainActivity.this, SearchActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -124,36 +118,52 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.cnn_news) {
             Toast.makeText(this, "CNN News", Toast.LENGTH_SHORT).show();
-
             if(!newsList.isEmpty()) {
                 newsList.clear();
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
-            AsynqBBC asynq= (AsynqBBC) new AsynqBBC()
+            new DownloadAndParseTask(this)
                     .execute("http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
                             "format=json&q=language%3A(english)%20site%3Acnn.com%20performance_score%3A%3E2%20(site_type%3Anews)");
         } else if (id == R.id.bbc_news) {
-            if(!newsList.isEmpty()) {
+            if (!newsList.isEmpty()) {
                 newsList.clear();
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
             Toast.makeText(this, "BBC News", Toast.LENGTH_SHORT).show();
-            AsynqBBC asynq= (AsynqBBC) new AsynqBBC()
+            new DownloadAndParseTask(this)
                     .execute("http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
                             "format=json&q=language%3A(english)%20site%3Abbc.co.uk%20performance_score%3A%3E2%20(site_type%3Anews)");
-
+        }else if(id == R.id.fox_news){
+            if (!newsList.isEmpty()) {
+                newsList.clear();
+                recyclerView.getAdapter().notifyDataSetChanged();
+            }
+            Toast.makeText(this, "FOX News", Toast.LENGTH_SHORT).show();
+            new DownloadAndParseTask(this)
+                    .execute("http://webhose.io/search?token=48ea2974-f86c-4b77-a968-1c9d64845502&" +
+                            "format=json&q=language%3A(english)%20site%3Afoxnews.com");
         } else if (id == R.id.business_category) {
-
+            Toast.makeText(this, "Business category selected", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.entertainment_category) {
-
+            Toast.makeText(this, "Entertainment category selected", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.health_category) {
-
+            Toast.makeText(this, "Health category selected", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.politics_category) {
-
+            Toast.makeText(this, "Politics category selected", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.sports_category) {
-
+            Toast.makeText(this, "Sports category selected", Toast.LENGTH_SHORT).show();
         }else if (id == R.id.technology_category) {
-
+            Toast.makeText(this, "Technology category selected", Toast.LENGTH_SHORT).show();
+        }else if (id == R.id.liked_news){
+            Toast.makeText(this, "Liked News", Toast.LENGTH_SHORT).show();
+            if (!newsList.isEmpty()) {
+                newsList.clear();
+                recyclerView.getAdapter().notifyDataSetChanged();
+            }
+            List<News> liked = new ArrayList<News>(DBManager.getInstance(this).likedNews.values());
+            recyclerView.setAdapter(new NewsRecyclerViewAdapter(this, liked));
+            recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -161,134 +171,34 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public class AsynqBBC extends AsyncTask<String,Void,Void> {
-
-        @Override
-        protected void onPreExecute() {
-            jsonText=new StringBuilder("");
-            progBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
-
-            try {
-                URL url= new URL(params[0]);
-
-                Log.d("unik",url.toString());
-                HttpURLConnection connection= (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-
-                BufferedReader in = new BufferedReader(new InputStreamReader(
-                        connection.getInputStream()));
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    jsonText.append(inputLine);
-                }
-                in.close();
-
-//                Scanner sc = new Scanner(connection.getInputStream());
-//                while(sc.hasNext()){
-//                    jsonText.append(" "+sc.next());
-//                }
-
-                //sc.close();
-                connection.disconnect();
-
-                JSONObject jsonObject=new JSONObject(jsonText.toString());
-
-                JSONArray posts=jsonObject.getJSONArray("posts");
-
-                for(int i=0;i<posts.length();i++){
-                    JSONObject post=  posts.getJSONObject(i);
-
-                    String title=post.getString("title");
-                    String desc=post.getString("text");
-                    String urlImage=post.getJSONObject("thread").getString("main_image");
-                    String author=post.getJSONObject("thread").getString("site");
-
-                    if(desc.length()>200){
-                        desc=desc.substring(0,200);
-                    }
-                    Log.d("opa",i+"");
-                    Log.d("opa", "TITLE: "+title);
-                    Log.d("opa", author);
-                    Log.d("opa", "DESC: "+desc);
-                    Log.d("opa", "imgURL: "+urlImage);
-
-                    News news=new News(title,author,desc,urlImage);
-                    newsList.add(news);
-                }
-
-                Log.d("opa", posts.length()+"");
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            DownloadImageTask downloadImageTask=new DownloadImageTask();
-            downloadImageTask.execute();
-        }
-    }
-    
-    private class DownloadImageTask extends AsyncTask<Void, Void, Void> {
-
-        protected Void doInBackground(Void... urls) {
-            String url = "";
-            InputStream in=null;
-
-            for(int i=0;i<5;i++){
-                Bitmap bitmap = null;
-
-                url=newsList.get(i).getImage();
-                try {
-                    in = new java.net.URL(url).openStream();
-                    bitmap = BitmapFactory.decodeStream(in);
-                } catch (Exception e) {
-                    Log.e("Error", ""+i);
-                    e.printStackTrace();
-                }
-                if(bitmap!=null) {
-                    newsList.get(i).setBitmapIMG(Bitmap.createScaledBitmap(bitmap, 180, 180, true));
-                }
-            }
-            try {
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        protected void onPostExecute(Void avoid) {
-
-            progBar.setVisibility(View.GONE);
-            recyclerView = (RecyclerView) findViewById(R.id.recycler_view_main_activity);
-            NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, newsList);
-            recyclerView.setAdapter(adapter);
-            clm= new CustomLayoutManager(MainActivity.this);
-            recyclerView.setLayoutManager(clm);
-
-        }
-    }
-
     public class DownloadSmallAmountOfImages extends AsyncTask<Integer,Void,Void>{
 
+        private Context context;
+        private List<News> listNews;
+        private ProgressBar progBar;
+        private MainActivity.CustomLayoutManager clm;
+
+        public DownloadSmallAmountOfImages(Context context) {
+            this.context = context;
+            if(context instanceof MainActivity){
+                progBar=MainActivity.this.getProgBar2();
+                listNews=MainActivity.newsList;
+                clm=MainActivity.getClm();
+            }
+            if(context instanceof SearchActivity){
+                listNews=SearchActivity.foundNews;
+                progBar=((SearchActivity)context).getProgBar();
+                clm=((SearchActivity)context).getClm();
+            }
+        }
+
         @Override
         protected void onPreExecute() {
-           clm.setScrollEnabled(false);
-           // progBar.setVisibility(View.VISIBLE);
+
+                clm.setScrollEnabled(false);
+                Log.e("patka","VLIZA");
+                progBar.setVisibility(View.VISIBLE);
+
         }
 
         @Override
@@ -297,13 +207,13 @@ public class MainActivity extends AppCompatActivity
             String url = "";
             InputStream in=null;
 
-            if(position>=newsList.size()){
-                return null;
-            }
             for(int i=position+1;i<=position+5;i++){
                 Bitmap bitmap = null;
 
-                url=newsList.get(i).getImage();
+                if(i>=this.listNews.size()){
+                    return null;
+                }
+                url=this.listNews.get(i).getImage();
                 try {
                     in = new java.net.URL(url).openStream();
                     bitmap = BitmapFactory.decodeStream(in);
@@ -312,7 +222,7 @@ public class MainActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
                 if(bitmap!=null) {
-                    newsList.get(i).setBitmapIMG(Bitmap.createScaledBitmap(bitmap, 180, 180, true));
+                    this.listNews.get(i).setBitmapIMG(Bitmap.createScaledBitmap(bitmap, 180, 180, true));
                 }
             }
             try {
@@ -325,13 +235,12 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            //progBar.setVisibility(View.GONE);
-            //recyclerView.getAdapter().notifyDataSetChanged();
-            clm.setScrollEnabled(true);
+                progBar.setVisibility(View.GONE);
+                clm.setScrollEnabled(true);
         }
     }
 
-    public class CustomLayoutManager extends LinearLayoutManager {
+    public static class CustomLayoutManager extends LinearLayoutManager {
         private boolean isScrollEnabled = true;
 
         public CustomLayoutManager(Context context) {
@@ -347,9 +256,32 @@ public class MainActivity extends AppCompatActivity
             //Similarly you can customize "canScrollHorizontally()" for managing horizontal scroll
             return isScrollEnabled && super.canScrollVertically();
         }
+
+        @Override
+        public boolean canScrollHorizontally() {
+            return super.canScrollHorizontally();
+        }
+    }
+
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
     }
 
     public static CustomLayoutManager getClm() {
         return clm;
     }
+
+    public ProgressBar getProgBar() {
+        return progBar;
+    }
+
+    public static StringBuilder getJsonText() {
+        return jsonText;
+    }
+
+    public ProgressBar getProgBar2() {
+        return progBar2;
+    }
+
+
 }
