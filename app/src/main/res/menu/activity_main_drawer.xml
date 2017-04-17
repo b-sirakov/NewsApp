@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group>
         <item
             android:id="@+id/bbc_news"
             android:title="@string/bbc_news" />
         <item
             android:id="@+id/cnn_news"
             android:title="@string/cnn_news" />
+        <item
+            android:id="@+id/fox_news"
+            android:title="@string/fox_news"/>
     </group>
 
     <item android:title="@string/categories">
@@ -31,6 +34,11 @@
                 android:id="@+id/technology_category"
                 android:title="@string/technology_category" />
         </menu>
+    </item>
+
+    <item
+        android:id="@+id/liked_news"
+        android:title="@string/liked_news">
     </item>
 
 </menu>

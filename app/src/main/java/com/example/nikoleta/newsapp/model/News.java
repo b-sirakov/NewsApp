@@ -10,7 +10,6 @@ public class News {
     private String image;
     private Bitmap bitmapIMG;
 
-
     public News(String title, String author, String text, String image){
 
         if(stringInputValidation(title)){
@@ -26,6 +25,32 @@ public class News {
             // TODO add URL validations
             this.image = image;
         }
+    }
+
+    public News(String title, String author, String text){
+
+        if(stringInputValidation(title)){
+            this.title = title;
+        }
+        if(stringInputValidation(author)){
+            this.author = author;
+        }
+        if(stringInputValidation(text)){
+            this.text = text;
+        }
+    }
+    public News(String title, String author, String text, Bitmap image){
+
+        if(stringInputValidation(title)){
+            this.title = title;
+        }
+        if(stringInputValidation(author)){
+            this.author = author;
+        }
+        if(stringInputValidation(text)){
+            this.text = text;
+        }
+        this.bitmapIMG = image;
     }
 
     public String getTitle() {
