@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity
                     .execute("http://webhose.io/search?token=48ea2974-f86c-4b77-a968-1c9d64845502&" +
                             "format=json&q=language%3A(english)%20site%3Afoxnews.com");
         } else if (id == R.id.business_category) {
-
+            // TODO
         } else if (id == R.id.entertainment_category) {
 
         } else if (id == R.id.health_category) {
