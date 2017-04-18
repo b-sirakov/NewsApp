@@ -1,43 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:layout_marginBottom="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <ImageView
-        android:id="@+id/news_image"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginRight="10dp"
-        android:src="@mipmap/ic_launcher_round"/>
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingRight="10dp">
+        <ImageView
+            android:id="@+id/news_image"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:src="@mipmap/ic_launcher_round" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <ImageButton
+                android:id="@+id/like_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_favorite_border"
+                android:onClick="like"
+                android:background="@android:color/transparent"/>
+
+            <ImageButton
+                android:id="@+id/share_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:actionProviderClass="android.widget.ShareActionProvider"
+                android:src="@drawable/ic_menu_share"
+                android:background="@android:color/transparent"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="3"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@android:color/transparent">
 
         <TextView
             android:id="@+id/news_title"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="@string/title"/>
+            android:text="@string/title"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            android:textColor="@color/red"/>
 
         <TextView
             android:id="@+id/news_author"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="@string/author"/>
+            android:text="@string/author"
+            android:textSize="15sp"
+            android:textColor="@color/red"/>
 
         <TextView
+            android:textSize="10sp"
             android:id="@+id/news_text"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="@string/text"/>
+            android:text="@string/text"
+            android:textColor="@color/red"/>
+
+
 
     </LinearLayout>
 
