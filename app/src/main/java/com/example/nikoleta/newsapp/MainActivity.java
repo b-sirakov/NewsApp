@@ -56,10 +56,11 @@ public class MainActivity extends AppCompatActivity
         newsList = new ArrayList<>();
         jsonText=new StringBuilder("");
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fab.setBackgroundResource(R.color.dark_red);
                 Intent intent =new Intent(MainActivity.this, SearchActivity.class);
                 startActivity(intent);
             }
@@ -144,17 +145,17 @@ public class MainActivity extends AppCompatActivity
                     .execute("http://webhose.io/search?token=48ea2974-f86c-4b77-a968-1c9d64845502&" +
                             "format=json&q=language%3A(english)%20site%3Afoxnews.com");
         } else if (id == R.id.business_category) {
-            Toast.makeText(this, "Business category selected", Toast.LENGTH_SHORT).show();
+
         } else if (id == R.id.entertainment_category) {
-            Toast.makeText(this, "Entertainment category selected", Toast.LENGTH_SHORT).show();
+
         } else if (id == R.id.health_category) {
-            Toast.makeText(this, "Health category selected", Toast.LENGTH_SHORT).show();
+
         } else if (id == R.id.politics_category) {
-            Toast.makeText(this, "Politics category selected", Toast.LENGTH_SHORT).show();
+
         } else if (id == R.id.sports_category) {
-            Toast.makeText(this, "Sports category selected", Toast.LENGTH_SHORT).show();
+
         }else if (id == R.id.technology_category) {
-            Toast.makeText(this, "Technology category selected", Toast.LENGTH_SHORT).show();
+
         }else if (id == R.id.liked_news){
             Toast.makeText(this, "Liked News", Toast.LENGTH_SHORT).show();
             if (!newsList.isEmpty()) {
@@ -196,7 +197,6 @@ public class MainActivity extends AppCompatActivity
         protected void onPreExecute() {
 
                 clm.setScrollEnabled(false);
-                Log.e("patka","VLIZA");
                 progBar.setVisibility(View.VISIBLE);
 
         }
@@ -282,6 +282,5 @@ public class MainActivity extends AppCompatActivity
     public ProgressBar getProgBar2() {
         return progBar2;
     }
-
 
 }

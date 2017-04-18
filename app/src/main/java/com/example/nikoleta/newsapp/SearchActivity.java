@@ -42,7 +42,6 @@ public class SearchActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_item,menu);
         MenuItem item = menu.findItem(R.id.action_search);
-        //searchView.setVisibility(View.VISIBLE);
 
         recyclerView= (RecyclerView) findViewById(R.id.recycle_view_search_activity);
         NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(this, this.foundNews);
@@ -51,7 +50,6 @@ public class SearchActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(clm);
 
         searchView.setMenuItem(item);
-
         searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
             @Override
             public void onSearchViewShown() {
@@ -97,7 +95,6 @@ public class SearchActivity extends AppCompatActivity {
             }
 
         });
-
         return true;
     }
 

@@ -64,7 +64,6 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
     @Override
     public void onBindViewHolder(final NewsRecyclerViewAdapter.NewsViewHolder holder, int position) {
         News news = this.news.get(position);
-        // TODO add an image
         if(context instanceof MainActivity) {
             if (position > 0 && position % 5 == 0) {
                 if (counter < position) {
