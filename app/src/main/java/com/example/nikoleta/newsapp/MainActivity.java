@@ -25,6 +25,8 @@ import android.widget.Toast;
 import com.example.nikoleta.newsapp.adapters.NewsRecyclerViewAdapter;
 import com.example.nikoleta.newsapp.model.News;
 import com.example.nikoleta.newsapp.tasks.DownloadAndParseTask;
+import com.example.nikoleta.newsapp.string_holders.StringHolder;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +42,9 @@ public class MainActivity extends AppCompatActivity
     private ProgressBar progBar2;
     private static StringBuilder jsonText;
     public static ArrayList<News> newsList;
+    public static List<News> foundNews=new ArrayList<>();
+    private StringHolder stringHolder;
+    private MaterialSearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +53,19 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        searchView= (MaterialSearchView) findViewById(R.id.search_view_main);
+
         recyclerView= (RecyclerView) findViewById(R.id.recycler_view_main_activity);
         progBar= (ProgressBar) findViewById(R.id.progress_bar);
         progBar2= (ProgressBar) findViewById(R.id.progress_bar2);
         clm=new CustomLayoutManager(this);
+        stringHolder=new StringHolder();
+
+        getSupportActionBar().setTitle("Search");
 
         newsList = new ArrayList<>();
         jsonText=new StringBuilder("");
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +100,55 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_item,menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+
+        searchView.setMenuItem(item);
+
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+            }
+            @Override
+            public void onSearchViewClosed() {
+                foundNews.clear();
+                //If closed Search View , recycle view will be empty
+                NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, foundNews);
+                recyclerView.setAdapter(adapter);
+            }
+        });
+
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(newText != null && !newText.isEmpty()){
+
+                    foundNews.clear();
+
+                    for(News news:MainActivity.newsList){
+                        if(news.getTitle().toLowerCase().contains(newText.toLowerCase())){
+                            foundNews.add(news);
+                        }
+                    }
+                    NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, foundNews);
+                    recyclerView.setAdapter(adapter);
+                }
+                else{
+                    foundNews.clear();
+                    NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, foundNews);
+                    recyclerView.setAdapter(adapter);
+                }
+                return true;
+            }
+
+        });
+
         return true;
     }
 
@@ -118,43 +178,109 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.cnn_news) {
             Toast.makeText(this, "CNN News", Toast.LENGTH_SHORT).show();
-            if(!newsList.isEmpty()) {
-                newsList.clear();
-                recyclerView.getAdapter().notifyDataSetChanged();
-            }
-            new DownloadAndParseTask(this)
-                    .execute("http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+
+            //set the URLs for each categort for CNN
+            stringHolder.setBusinessURL(
+                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                            "format=json&q=business%20site%3Acnn.com"
+            );
+            stringHolder.setHealthURL(
+                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                            "format=json&q=health%20site%3Acnn.com%20(site_type%3Anews)"
+            );
+            stringHolder.setPoliticsURL(
+                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                            "format=json&q=politics%20site%3Acnn.com%20(site_type%3Anews)"
+            );
+            stringHolder.setSportsURL(
+                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                            "format=json&q=sport%20site%3Acnn.com%20(site_type%3Anews)"
+            );
+            stringHolder.setTechnologiesURL(
+                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                            "format=json&q=technology%20site%3Acnn.com%20(site_type%3Anews)"
+            );
+            callAsynqTask("http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
                             "format=json&q=language%3A(english)%20site%3Acnn.com%20performance_score%3A%3E2%20(site_type%3Anews)");
         } else if (id == R.id.bbc_news) {
-            if (!newsList.isEmpty()) {
-                newsList.clear();
-                recyclerView.getAdapter().notifyDataSetChanged();
-            }
             Toast.makeText(this, "BBC News", Toast.LENGTH_SHORT).show();
-            new DownloadAndParseTask(this)
-                    .execute("http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+
+            //set the URLs for each categort for BBC
+            stringHolder.setBusinessURL(
+                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                            "format=json&q=economy%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
+            );
+            stringHolder.setHealthURL(
+                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                            "format=json&q=health%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
+            );
+            stringHolder.setPoliticsURL(
+                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                            "format=json&q=politics%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
+            );
+            stringHolder.setSportsURL(
+                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                            "format=json&q=sport%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
+            );
+            stringHolder.setTechnologiesURL(
+                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                            "format=json&q=technology%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
+            );
+
+            callAsynqTask("http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
                             "format=json&q=language%3A(english)%20site%3Abbc.co.uk%20performance_score%3A%3E2%20(site_type%3Anews)");
+
         }else if(id == R.id.fox_news){
-            if (!newsList.isEmpty()) {
-                newsList.clear();
-                recyclerView.getAdapter().notifyDataSetChanged();
-            }
             Toast.makeText(this, "FOX News", Toast.LENGTH_SHORT).show();
-            new DownloadAndParseTask(this)
-                    .execute("http://webhose.io/search?token=48ea2974-f86c-4b77-a968-1c9d64845502&" +
+
+            //set the URLs for each categort for FOX News
+            stringHolder.setBusinessURL(
+                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                            "format=json&q=business%20language%3A(english)%20site%3Afoxnews.com%20(site_type%3Anews)"
+            );
+            stringHolder.setHealthURL(
+                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                            "format=json&q=health%20language%3A(english)%20site%3Afoxnews.com%20(site_type%3Anews)"
+            );
+            stringHolder.setPoliticsURL(
+                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                            "format=json&q=politics%20language%3A(english)%20site%3Afoxnews.com%20(site_type%3Anews)"
+            );
+            stringHolder.setSportsURL(
+                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                            "format=json&q=sports%20language%3A(english)%20site%3Afoxnews.com%20(site_type%3Anews)"
+            );
+            stringHolder.setTechnologiesURL(
+                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                            "format=json&q=technology%20language%3A(english)%20site%3Afoxnews.com%20(site_type%3Anews)"
+            );
+
+
+            callAsynqTask("http://webhose.io/search?token=48ea2974-f86c-4b77-a968-1c9d64845502&" +
                             "format=json&q=language%3A(english)%20site%3Afoxnews.com");
+
         } else if (id == R.id.business_category) {
             Toast.makeText(this, "Business category selected", Toast.LENGTH_SHORT).show();
+            callAsynqTask(stringHolder.getBusinessURL());
+
         } else if (id == R.id.entertainment_category) {
             Toast.makeText(this, "Entertainment category selected", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.health_category) {
             Toast.makeText(this, "Health category selected", Toast.LENGTH_SHORT).show();
+            callAsynqTask(stringHolder.getHealthURL());
+
         } else if (id == R.id.politics_category) {
             Toast.makeText(this, "Politics category selected", Toast.LENGTH_SHORT).show();
+            callAsynqTask(stringHolder.getPoliticsURL());
+
         } else if (id == R.id.sports_category) {
             Toast.makeText(this, "Sports category selected", Toast.LENGTH_SHORT).show();
+            callAsynqTask(stringHolder.getSportsURL());
+
         }else if (id == R.id.technology_category) {
             Toast.makeText(this, "Technology category selected", Toast.LENGTH_SHORT).show();
+            callAsynqTask(stringHolder.getTechnologiesURL());
+
         }else if (id == R.id.liked_news){
             Toast.makeText(this, "Liked News", Toast.LENGTH_SHORT).show();
             if (!newsList.isEmpty()) {
@@ -169,6 +295,14 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void callAsynqTask(String url){
+        if (!newsList.isEmpty()) {
+            newsList.clear();
+            recyclerView.getAdapter().notifyDataSetChanged();
+        }
+        new DownloadAndParseTask(this).execute(url);
     }
 
     public class DownloadSmallAmountOfImages extends AsyncTask<Integer,Void,Void>{
@@ -194,11 +328,8 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPreExecute() {
-
                 clm.setScrollEnabled(false);
-                Log.e("patka","VLIZA");
                 progBar.setVisibility(View.VISIBLE);
-
         }
 
         @Override
@@ -213,7 +344,7 @@ public class MainActivity extends AppCompatActivity
                 if(i>=this.listNews.size()){
                     return null;
                 }
-                url=this.listNews.get(i).getImage();
+                url=this.listNews.get(i).getImageURL();
                 try {
                     in = new java.net.URL(url).openStream();
                     bitmap = BitmapFactory.decodeStream(in);

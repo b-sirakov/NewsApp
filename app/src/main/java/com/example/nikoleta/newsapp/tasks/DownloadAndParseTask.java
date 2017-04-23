@@ -122,7 +122,10 @@ public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
             for(int i=0;i<5;i++){
                 Bitmap bitmap = null;
 
-                url=MainActivity.newsList.get(i).getImage();
+                if(i>=MainActivity.newsList.size()){
+                    return null;
+                }
+                url=MainActivity.newsList.get(i).getImageURL();
                 try {
                     in = new java.net.URL(url).openStream();
                     bitmap = BitmapFactory.decodeStream(in);

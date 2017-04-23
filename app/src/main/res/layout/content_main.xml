@@ -6,12 +6,12 @@
     android:id="@+id/layout_main_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.nikoleta.newsapp.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
     <ProgressBar
+
         android:layout_weight="1"
         android:id="@+id/progress_bar"
         android:visibility="gone"

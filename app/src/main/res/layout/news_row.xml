@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:layout_marginBottom="10dp"
+    android:layout_marginBottom="7dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:elevation="2dp"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@android:drawable/dialog_holo_light_frame"
+    >
 
     <ImageView
-
         android:id="@+id/news_image"
         android:layout_width="0dp"
+        android:scaleType="centerCrop"
         android:layout_height="fill_parent"
         android:layout_weight="1.5"
         android:src="@mipmap/ic_launcher_round"/>
@@ -21,7 +24,8 @@
         android:orientation="vertical">
 
         <TextView
-            android:background="#d6fefc"
+            android:textSize="17sp"
+            android:textColor="#332233"
             android:id="@+id/news_title"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -29,7 +33,8 @@
             android:text="@string/title"/>
 
         <TextView
-            android:background="#30f970"
+            android:textSize="15sp"
+            android:textColor="@color/red"
             android:id="@+id/news_author"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -37,8 +42,8 @@
             android:text="@string/author"/>
 
         <TextView
+            android:textColor="@color/red"
             android:textSize="10sp"
-            android:background="#faffb5"
             android:id="@+id/news_text"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -51,10 +56,12 @@
             android:layout_weight="1">
 
             <ImageButton
+                android:src="@mipmap/ic_like"
                 android:id="@+id/like_button"
+                android:scaleType="centerCrop"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_favorite_border"
+                android:layout_height="fill_parent"
+
                 android:onClick="like"/>
 
             <ImageButton
@@ -63,6 +70,14 @@
                 android:layout_height="wrap_content"
                 android:actionProviderClass="android.widget.ShareActionProvider"
                 android:src="@drawable/ic_menu_share" />
+
+            <Button
+                android:id="@+id/read_more_button"
+                android:textSize="10sp"
+                android:text="Read More"
+                android:layout_marginLeft="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

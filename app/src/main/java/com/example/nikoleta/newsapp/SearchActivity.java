@@ -55,9 +55,7 @@ public class SearchActivity extends AppCompatActivity {
         searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
             @Override
             public void onSearchViewShown() {
-
             }
-
             @Override
             public void onSearchViewClosed() {
                 SearchActivity.this.foundNews.clear();

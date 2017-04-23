@@ -36,9 +36,13 @@
         </menu>
     </item>
 
-    <item
-        android:id="@+id/liked_news"
-        android:title="@string/liked_news">
+    <item android:title="History">
+        <menu>
+            <item
+                android:id="@+id/liked_news"
+                android:title="@string/liked_news">
+            </item>
+        </menu>
     </item>
 
 </menu>

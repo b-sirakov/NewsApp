@@ -3,9 +3,16 @@ package com.example.nikoleta.newsapp;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.nikoleta.newsapp.model.News;
 
 
 /**
@@ -13,6 +20,11 @@ import android.view.ViewGroup;
  */
 public class NewsContentFragment extends Fragment {
 
+    ImageView image;
+    TextView title;
+    TextView text;
+    TextView author;
+    RecyclerView recyclerView;
 
     public NewsContentFragment() {
         // Required empty public constructor
@@ -23,7 +35,26 @@ public class NewsContentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_news_content, container, false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        View view = inflater.inflate(R.layout.fragment_news_content, container, false);
+        image = (ImageView) view.findViewById(R.id.image_news_content_fragment);
+        title = (TextView) view.findViewById(R.id.title_news_content_fragment);
+        text = (TextView) view.findViewById(R.id.text_news_content_fragment);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_suggested_news);
+
+        News n = (News) getArguments().getSerializable("content");
+        Toast.makeText(getContext(), n.getTitle() + "" , Toast.LENGTH_SHORT).show();
+        image.setImageBitmap(n.getBitmapIMG());
+        title.setText(n.getTitle());
+        text.setText(n.getText());
+        // author.setText(n.getAuthor());
+
+//        final ArrayList<News> related = new ArrayList<>();
+//
+//        recyclerView.setAdapter(new NewsRecyclerViewAdapter(getContext(), MainActivity.newsList));
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+
+        return view;
     }
 
 }

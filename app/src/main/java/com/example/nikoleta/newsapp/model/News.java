@@ -2,12 +2,14 @@ package com.example.nikoleta.newsapp.model;
 
 import android.graphics.Bitmap;
 
-public class News {
+import java.io.Serializable;
+
+public class News implements Serializable {
 
     private String title;
     private String author;
     private String text;
-    private String image;
+    private String imageURL;
     private Bitmap bitmapIMG;
 
     public News(String title, String author, String text, String image){
@@ -23,7 +25,7 @@ public class News {
         }
         if(stringInputValidation(image)){
             // TODO add URL validations
-            this.image = image;
+            this.imageURL = image;
         }
     }
 
@@ -62,8 +64,8 @@ public class News {
     public String getText() {
         return text;
     }
-    public String getImage() {
-        return image;
+    public String getImageURL() {
+        return imageURL;
     }
 
     public void setBitmapIMG(Bitmap bitmapIMG) {
