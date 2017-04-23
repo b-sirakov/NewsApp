@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
 
@@ -63,28 +64,39 @@ public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
             }
             in.close();
 
-//                Scanner sc = new Scanner(connection.getInputStream());
-//                while(sc.hasNext()){
-//                    jsonText.append(" "+sc.next());
-//                }
-            //sc.close();
             connection.disconnect();
 
             JSONObject jsonObject=new JSONObject(jsonText.toString());
 
             JSONArray posts=jsonObject.getJSONArray("posts");
 
+            ArrayList<String> titles=new ArrayList<String>();
+
             for(int i=0;i<posts.length();i++){
                 JSONObject post=  posts.getJSONObject(i);
 
+                boolean isThisTitleRepeated=false;
+
+                for(int a=0;a<titles.size();a++) {
+                    if (titles.get(a).contains(post.getString("title")) && !titles.get(a).isEmpty()) {
+                        isThisTitleRepeated=true;
+                    }
+                }
+                if(isThisTitleRepeated){
+                    continue;
+                }
+
                 String title=post.getString("title");
+                titles.add(title);
                 String desc=post.getString("text");
                 String urlImage=post.getJSONObject("thread").getString("main_image");
                 String author=post.getJSONObject("thread").getString("site");
 
-                if(desc.length()>200){
-                    desc=desc.substring(0,200);
-                }
+
+
+//                if(desc.length()>200){
+//                    desc=desc.substring(0,200);
+//                }
                 Log.d("opa",i+"");
                 Log.d("opa", "TITLE: "+title);
                 Log.d("opa", author);
@@ -134,7 +146,7 @@ public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
                     e.printStackTrace();
                 }
                 if(bitmap!=null) {
-                    MainActivity.newsList.get(i).setBitmapIMG(Bitmap.createScaledBitmap(bitmap, 180, 180, true));
+                    MainActivity.newsList.get(i).setBitmapIMG(Bitmap.createScaledBitmap(bitmap, 360, 360, true));
                 }
             }
             try {

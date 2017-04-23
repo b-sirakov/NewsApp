@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout
     android:layout_marginBottom="7dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:elevation="2dp"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:drawable/dialog_holo_light_frame"
     >
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
 
     <ImageView
         android:id="@+id/news_image"
@@ -41,14 +48,7 @@
             android:layout_weight="1"
             android:text="@string/author"/>
 
-        <TextView
-            android:textColor="@color/red"
-            android:textSize="10sp"
-            android:id="@+id/news_text"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="@string/text"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -56,31 +56,48 @@
             android:layout_weight="1">
 
             <ImageButton
+                android:layout_weight="1"
                 android:src="@mipmap/ic_like"
                 android:id="@+id/like_button"
                 android:scaleType="centerCrop"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="fill_parent"
 
                 android:onClick="like"/>
 
             <ImageButton
+                android:layout_weight="1"
                 android:id="@+id/share_button"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:actionProviderClass="android.widget.ShareActionProvider"
                 android:src="@drawable/ic_menu_share" />
 
             <Button
+                android:layout_weight="2"
                 android:id="@+id/read_more_button"
                 android:textSize="10sp"
                 android:text="Read More"
-                android:layout_marginLeft="30dp"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+            <Button
+                android:layout_weight="2"
+                android:id="@+id/expand_button"
+                android:textSize="10sp"
+                android:text="Expand"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
 
     </LinearLayout>
-
+    </LinearLayout>
+    <TextView
+        android:textColor="@color/red"
+        android:textSize="14sp"
+        android:id="@+id/news_text"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="@string/text"/>
 </LinearLayout>

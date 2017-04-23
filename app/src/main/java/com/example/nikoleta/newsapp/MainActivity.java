@@ -256,8 +256,8 @@ public class MainActivity extends AppCompatActivity
             );
 
 
-            callAsynqTask("http://webhose.io/search?token=48ea2974-f86c-4b77-a968-1c9d64845502&" +
-                            "format=json&q=language%3A(english)%20site%3Afoxnews.com");
+            callAsynqTask("http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                    "format=json&q=site%3Afoxnews.com");
 
         } else if (id == R.id.business_category) {
             Toast.makeText(this, "Business category selected", Toast.LENGTH_SHORT).show();
@@ -353,11 +353,13 @@ public class MainActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
                 if(bitmap!=null) {
-                    this.listNews.get(i).setBitmapIMG(Bitmap.createScaledBitmap(bitmap, 180, 180, true));
+                    this.listNews.get(i).setBitmapIMG(Bitmap.createScaledBitmap(bitmap, 360, 360, true));
                 }
             }
             try {
-                in.close();
+                if(in!=null) {
+                    in.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

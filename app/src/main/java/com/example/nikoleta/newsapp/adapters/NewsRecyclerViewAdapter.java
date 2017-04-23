@@ -28,6 +28,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
     private int counter;
     private Context context;
     private List<News> news = new ArrayList<News>();
+    private List<Integer> expandetPositions=new ArrayList<Integer>();
 
     public NewsRecyclerViewAdapter(Context context, List news){
         counter=0;
@@ -45,6 +46,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         ImageButton like;
         ImageButton share;
         Button readMore;
+        Button expandButton;
 
 
         public NewsViewHolder(View row) {
@@ -58,6 +60,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
             this.like = (ImageButton) row.findViewById(R.id.like_button);
             this.share = (ImageButton) row.findViewById(R.id.share_button);
             this.readMore = (Button) row.findViewById(R.id.read_more_button);
+            this.expandButton = (Button) row.findViewById(R.id.expand_button);
         }
     }
 
@@ -94,7 +97,20 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         }
         holder.title.setText(news.getTitle());
         holder.author.setText(news.getAuthor());
-        holder.text.setText(news.getText());
+        holder.text.setText( (news.getText().length()>200? news.getText().substring(0,200): news.getText())+"..." );
+
+        boolean isExpanded=false;
+        if(expandetPositions.contains(new Integer(position))){
+            isExpanded=true;
+        }
+        if(isExpanded){
+            holder.expandButton.setText("Close");
+            holder.text.setVisibility(View.VISIBLE);
+        }else{
+            holder.expandButton.setText("Expand");
+            holder.text.setVisibility(View.GONE);
+        }
+
         if(news.getBitmapIMG()==null){
             if(news.getAuthor().equals("cnn.com")) {
                 holder.image.setImageResource(R.drawable.cnn);
@@ -123,6 +139,26 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 Intent intent = new Intent(android.content.Intent.ACTION_SEND);
                 intent.setType("text/plain");
                 context.startActivity(Intent.createChooser(intent, "Shearing Option"));
+            }
+        });
+
+        holder.expandButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+//               Transition transition = new AutoTransition();
+//               transition.setDuration(400);
+//               TransitionManager.beginDelayedTransition((ViewGroup) holder.text.getParent(), transition);
+                //visible = !visible;
+                if( holder.text.getVisibility()==View.GONE){
+                    holder.text.setVisibility(View.VISIBLE);
+                    holder.expandButton.setText("Close");
+                    expandetPositions.add(position);
+                }else{
+                    holder.expandButton.setText("Expand");
+                    holder.text.setVisibility(View.GONE);
+                    expandetPositions.remove(new Integer(position));
+                }
             }
         });
 
