@@ -92,11 +92,6 @@ public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
                 String urlImage=post.getJSONObject("thread").getString("main_image");
                 String author=post.getJSONObject("thread").getString("site");
 
-
-
-//                if(desc.length()>200){
-//                    desc=desc.substring(0,200);
-//                }
                 Log.d("opa",i+"");
                 Log.d("opa", "TITLE: "+title);
                 Log.d("opa", author);

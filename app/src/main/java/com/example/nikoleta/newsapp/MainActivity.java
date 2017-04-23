@@ -1,5 +1,6 @@
 package com.example.nikoleta.newsapp;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, NewsContentFragment.ComunicatorNewsContentFragment {
 
     private RecyclerView recyclerView;
     private static CustomLayoutManager clm;
@@ -303,6 +304,16 @@ public class MainActivity extends AppCompatActivity
             recyclerView.getAdapter().notifyDataSetChanged();
         }
         new DownloadAndParseTask(this).execute(url);
+    }
+
+    @Override
+    public void closeNewsContentFragment() {
+
+        android.support.v4.app.Fragment frag = getSupportFragmentManager().findFragmentByTag("ContentFragment");
+        getSupportFragmentManager().beginTransaction().remove(frag).commit();
+
+        this.getSupportActionBar().show();
+        recyclerView.setVisibility(View.VISIBLE);
     }
 
     public class DownloadSmallAmountOfImages extends AsyncTask<Integer,Void,Void>{

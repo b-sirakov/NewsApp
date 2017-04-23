@@ -8,9 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.nikoleta.newsapp.model.News;
 
@@ -20,11 +20,16 @@ import com.example.nikoleta.newsapp.model.News;
  */
 public class NewsContentFragment extends Fragment {
 
+    public interface ComunicatorNewsContentFragment{
+        void closeNewsContentFragment();
+    }
+
     ImageView image;
     TextView title;
     TextView text;
     TextView author;
     RecyclerView recyclerView;
+    ImageButton backToMainPageButton;
 
     public NewsContentFragment() {
         // Required empty public constructor
@@ -41,9 +46,21 @@ public class NewsContentFragment extends Fragment {
         title = (TextView) view.findViewById(R.id.title_news_content_fragment);
         text = (TextView) view.findViewById(R.id.text_news_content_fragment);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_suggested_news);
+        backToMainPageButton = (ImageButton) view.findViewById(R.id.back_option);
+
+        backToMainPageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ComunicatorNewsContentFragment comunicator=
+                        (ComunicatorNewsContentFragment) getActivity();
+
+                comunicator.closeNewsContentFragment();
+            }
+        });
+
 
         News n = (News) getArguments().getSerializable("content");
-        Toast.makeText(getContext(), n.getTitle() + "" , Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), n.getTitle() + "" , Toast.LENGTH_SHORT).show();
         image.setImageBitmap(n.getBitmapIMG());
         title.setText(n.getTitle());
         text.setText(n.getText());

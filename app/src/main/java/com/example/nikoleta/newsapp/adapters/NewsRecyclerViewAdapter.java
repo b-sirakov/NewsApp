@@ -3,6 +3,7 @@ package com.example.nikoleta.newsapp.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -174,9 +175,9 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 bundle.putSerializable("content", chosen);
                 fragment.setArguments(bundle);
 
-                android.support.v4.app.FragmentManager manager = ((AppCompatActivity) context).getSupportFragmentManager();
+                FragmentManager manager = ((AppCompatActivity) context).getSupportFragmentManager();
                 manager.beginTransaction()
-                        .add(R.id.layout_main_activity, fragment, "content fragment")
+                        .add(R.id.layout_main_activity, fragment, "ContentFragment")
                         .commit();
             }
         });
