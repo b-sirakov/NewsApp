@@ -59,6 +59,7 @@ public class DBManager extends SQLiteOpenHelper{
             String title = cursor.getString(cursor.getColumnIndex("title"));
             String author = cursor.getString(cursor.getColumnIndex("author"));
             String text = cursor.getString(cursor.getColumnIndex("text"));
+
             News current = new News(title, author, text);
             likedNews.put(title, current);
         }

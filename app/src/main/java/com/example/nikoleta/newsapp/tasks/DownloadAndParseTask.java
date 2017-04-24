@@ -91,6 +91,8 @@ public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
                 String desc=post.getString("text");
                 String urlImage=post.getJSONObject("thread").getString("main_image");
                 String author=post.getJSONObject("thread").getString("site");
+                String date = post.getJSONObject("thread").getString("published");
+                String original = post.getJSONObject("thread").getString("url");
 
                 Log.d("opa",i+"");
                 Log.d("opa", "TITLE: "+title);
@@ -98,7 +100,7 @@ public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
                 Log.d("opa", "DESC: "+desc);
                 Log.d("opa", "imgURL: "+urlImage);
 
-                News news=new News(title,author,desc,urlImage);
+                News news=new News(title,author,desc,urlImage,date,original);
                 MainActivity.newsList.add(news);
             }
 

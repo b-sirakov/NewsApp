@@ -1,6 +1,8 @@
 package com.example.nikoleta.newsapp;
 
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +30,8 @@ public class NewsContentFragment extends Fragment {
     TextView title;
     TextView text;
     TextView author;
+    TextView date;
+    TextView original;
     RecyclerView recyclerView;
     ImageButton backToMainPageButton;
 
@@ -35,16 +39,17 @@ public class NewsContentFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+
         View view = inflater.inflate(R.layout.fragment_news_content, container, false);
         image = (ImageView) view.findViewById(R.id.image_news_content_fragment);
         title = (TextView) view.findViewById(R.id.title_news_content_fragment);
         text = (TextView) view.findViewById(R.id.text_news_content_fragment);
+        date = (TextView) view.findViewById(R.id.date_news_content_fragment);
+        original = (TextView) view.findViewById(R.id.link_news_content_fragment);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_suggested_news);
         backToMainPageButton = (ImageButton) view.findViewById(R.id.back_option);
 
@@ -58,16 +63,40 @@ public class NewsContentFragment extends Fragment {
             }
         });
 
+        view.findViewById(R.id.like_button_news_content_fragment).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                News n = (News) getArguments().getSerializable("content");
+                DBManager.getInstance(getContext()).addNews(n);
+            }
+        });
 
-        News n = (News) getArguments().getSerializable("content");
+        view.findViewById(R.id.share_button_news_content_fragment).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                getContext().startActivity(Intent.createChooser(intent, "Sharing Option"));
+            }
+        });
+
+        final News n = (News) getArguments().getSerializable("content");
         //Toast.makeText(getContext(), n.getTitle() + "" , Toast.LENGTH_SHORT).show();
         image.setImageBitmap(n.getBitmapIMG());
         title.setText(n.getTitle());
         text.setText(n.getText());
-        // author.setText(n.getAuthor());
+        //author.setText(n.getAuthor());
+        date.setText(n.getDate().substring(0,10) + " | ");
+        original.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(n.getOriginalArticleURL()));
+                startActivity(intent);
+            }
+        });
 
 //        final ArrayList<News> related = new ArrayList<>();
-//
 //        recyclerView.setAdapter(new NewsRecyclerViewAdapter(getContext(), MainActivity.newsList));
 //        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 

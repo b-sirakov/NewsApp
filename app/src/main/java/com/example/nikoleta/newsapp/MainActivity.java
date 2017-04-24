@@ -1,10 +1,10 @@
 package com.example.nikoleta.newsapp;
 
-import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -25,8 +25,8 @@ import android.widget.Toast;
 
 import com.example.nikoleta.newsapp.adapters.NewsRecyclerViewAdapter;
 import com.example.nikoleta.newsapp.model.News;
-import com.example.nikoleta.newsapp.tasks.DownloadAndParseTask;
 import com.example.nikoleta.newsapp.string_holders.StringHolder;
+import com.example.nikoleta.newsapp.tasks.DownloadAndParseTask;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.io.IOException;
@@ -55,25 +55,26 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         searchView= (MaterialSearchView) findViewById(R.id.search_view_main);
-
         recyclerView= (RecyclerView) findViewById(R.id.recycler_view_main_activity);
         progBar= (ProgressBar) findViewById(R.id.progress_bar);
         progBar2= (ProgressBar) findViewById(R.id.progress_bar2);
         clm=new CustomLayoutManager(this);
         stringHolder=new StringHolder();
 
-        getSupportActionBar().setTitle("Search");
+        getSupportActionBar().setTitle("NewsApp");
 
         newsList = new ArrayList<>();
         jsonText=new StringBuilder("");
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setBackgroundTintList(ColorStateList.valueOf(Color
+                .parseColor("#5E5C6C")));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent =new Intent(MainActivity.this, SearchActivity.class);
-                startActivity(intent);
+                // TODO
+                searchView.requestFocus();
             }
         });
 
@@ -330,11 +331,6 @@ public class MainActivity extends AppCompatActivity
                 listNews=MainActivity.newsList;
                 clm=MainActivity.getClm();
             }
-            if(context instanceof SearchActivity){
-                listNews=SearchActivity.foundNews;
-                progBar=((SearchActivity)context).getProgBar();
-                clm=((SearchActivity)context).getClm();
-            }
         }
 
         @Override
@@ -426,6 +422,5 @@ public class MainActivity extends AppCompatActivity
     public ProgressBar getProgBar2() {
         return progBar2;
     }
-
 
 }

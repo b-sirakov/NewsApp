@@ -18,7 +18,6 @@ import com.example.nikoleta.newsapp.DBManager;
 import com.example.nikoleta.newsapp.MainActivity;
 import com.example.nikoleta.newsapp.NewsContentFragment;
 import com.example.nikoleta.newsapp.R;
-import com.example.nikoleta.newsapp.SearchActivity;
 import com.example.nikoleta.newsapp.model.News;
 
 import java.util.ArrayList;
@@ -81,16 +80,6 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 if (counter < position) {
                     counter = position;
                     MainActivity ma = (MainActivity) context;
-                    MainActivity.DownloadSmallAmountOfImages downloadTask = ma.new DownloadSmallAmountOfImages(context);
-                    downloadTask.execute(counter);
-                }
-            }
-        }
-        if(context instanceof SearchActivity) {
-            if (position % 5 == 0) {
-                if (counter < position) {
-                    counter = position;
-                    MainActivity ma=new MainActivity();
                     MainActivity.DownloadSmallAmountOfImages downloadTask = ma.new DownloadSmallAmountOfImages(context);
                     downloadTask.execute(counter);
                 }
@@ -182,7 +171,6 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
             }
         });
     }
-
 
     @Override
     public int getItemCount() {

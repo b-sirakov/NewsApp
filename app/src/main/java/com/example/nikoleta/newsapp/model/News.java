@@ -11,8 +11,10 @@ public class News implements Serializable {
     private String text;
     private String imageURL;
     private Bitmap bitmapIMG;
+    private String date;
+    private String originalArticleURL;
 
-    public News(String title, String author, String text, String image){
+    public News(String title, String author, String text, String image, String date, String originalArticleURL){
 
         if(stringInputValidation(title)){
             this.title = title;
@@ -24,8 +26,13 @@ public class News implements Serializable {
             this.text = text;
         }
         if(stringInputValidation(image)){
-            // TODO add URL validations
             this.imageURL = image;
+        }
+        if(stringInputValidation(date)){
+            this.date = date;
+        }
+        if(stringInputValidation(originalArticleURL)){
+            this.originalArticleURL = originalArticleURL;
         }
     }
 
@@ -66,6 +73,12 @@ public class News implements Serializable {
     }
     public String getImageURL() {
         return imageURL;
+    }
+    public String getDate() {
+        return date;
+    }
+    public String getOriginalArticleURL() {
+        return originalArticleURL;
     }
 
     public void setBitmapIMG(Bitmap bitmapIMG) {
