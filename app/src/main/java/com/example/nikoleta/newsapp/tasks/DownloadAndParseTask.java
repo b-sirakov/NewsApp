@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
@@ -32,6 +33,7 @@ public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
     private ProgressBar progBar;
     private RecyclerView recyclerView;
     private static MainActivity.CustomLayoutManager clm;
+
 
     public DownloadAndParseTask(MainActivity activity){
         this.activity=activity;
@@ -71,6 +73,7 @@ public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
             JSONArray posts=jsonObject.getJSONArray("posts");
 
             ArrayList<String> titles=new ArrayList<String>();
+
 
             for(int i=0;i<posts.length();i++){
                 JSONObject post=  posts.getJSONObject(i);
@@ -120,6 +123,7 @@ public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
     protected void onPostExecute(Void aVoid) {
         DownloadImageTask downloadImageTask=new DownloadImageTask();
         downloadImageTask.execute();
+
     }
 
     private class DownloadImageTask extends AsyncTask<Void, Void, Void> {

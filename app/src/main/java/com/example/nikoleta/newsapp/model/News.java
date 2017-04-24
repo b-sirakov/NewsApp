@@ -85,6 +85,10 @@ public class News implements Serializable {
         this.bitmapIMG = bitmapIMG;
     }
 
+    public void setOriginalArticleURL(String originalArticleURL) {
+        this.originalArticleURL = originalArticleURL;
+    }
+
     public Bitmap getBitmapIMG() {
         return bitmapIMG;
     }

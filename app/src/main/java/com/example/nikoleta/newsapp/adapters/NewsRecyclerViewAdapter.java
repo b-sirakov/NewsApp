@@ -1,7 +1,6 @@
 package com.example.nikoleta.newsapp.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +18,7 @@ import com.example.nikoleta.newsapp.MainActivity;
 import com.example.nikoleta.newsapp.NewsContentFragment;
 import com.example.nikoleta.newsapp.R;
 import com.example.nikoleta.newsapp.model.News;
+import com.example.nikoleta.newsapp.tasks.ExtractOrigLinkAndShareTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,9 +126,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         holder.share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-                intent.setType("text/plain");
-                context.startActivity(Intent.createChooser(intent, "Shearing Option"));
+                new ExtractOrigLinkAndShareTask(context).execute(new Integer(position),null,null);
             }
         });
 
