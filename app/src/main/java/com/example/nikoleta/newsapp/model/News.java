@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 public class News implements Serializable {
 
+    private int id;
     private String title;
     private String author;
     private String text;
@@ -15,7 +16,6 @@ public class News implements Serializable {
     private String originalArticleURL;
 
     public News(String title, String author, String text, String image, String date, String originalArticleURL){
-
         if(stringInputValidation(title)){
             this.title = title;
         }
@@ -84,9 +84,13 @@ public class News implements Serializable {
     public void setBitmapIMG(Bitmap bitmapIMG) {
         this.bitmapIMG = bitmapIMG;
     }
-
     public void setOriginalArticleURL(String originalArticleURL) {
         this.originalArticleURL = originalArticleURL;
+    }
+    public void setId(int id) {
+        if(id >= 0) {
+            this.id = id;
+        }
     }
 
     public Bitmap getBitmapIMG() {

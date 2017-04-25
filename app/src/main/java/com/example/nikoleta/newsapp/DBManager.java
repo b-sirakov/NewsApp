@@ -17,9 +17,12 @@ public class DBManager extends SQLiteOpenHelper{
     public static HashMap<String, News> likedNews;
     private static final String SQL_CREATE_TABLE_LIKED = "CREATE TABLE liked(\n" +
             "\n" +
+            " id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             " title text NOT NULL,\n" +
             " author text NOT NULL,\n" +
             " text text NOT NULL,\n" +
+            " date text NOT NULL,\n" +
+            " link text NOT NULL,\n" +
             " image BLOB\n" +
             ");";
 
@@ -29,14 +32,14 @@ public class DBManager extends SQLiteOpenHelper{
             ourInstance = new DBManager(context);
             DBManager.context = context;
             ourInstance.create();
-            likedNews = new HashMap<String, News>();
+            likedNews = new HashMap<>();
             loadNews();
         }
         return ourInstance;
     }
 
     private DBManager(Context context) {
-        super(context, "liked", null, 1);
+        super(context, "liked", null, 2);
     }
 
     @Override
@@ -47,7 +50,10 @@ public class DBManager extends SQLiteOpenHelper{
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO
+        if(oldVersion == 1 && newVersion == 2){
+            db.execSQL("DROP TABLE liked");
+            onCreate(db);
+        }
     }
 
     protected SQLiteDatabase create(){
@@ -73,7 +79,8 @@ public class DBManager extends SQLiteOpenHelper{
         content.put("title", news.getTitle());
         content.put("author", news.getAuthor());
         content.put("text", news.getText());
-        getWritableDatabase().insert("liked", null, content);
+        long id = getWritableDatabase().insert("liked", null, content);
+        news.setId((int) id);
         likedNews.put(news.getTitle(), news);
         Toast.makeText(context, "Liked", Toast.LENGTH_SHORT).show();
     }
