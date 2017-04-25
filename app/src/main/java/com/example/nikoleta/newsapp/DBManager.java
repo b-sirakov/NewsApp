@@ -60,13 +60,15 @@ public class DBManager extends SQLiteOpenHelper{
         return getWritableDatabase();
     }
     private static void loadNews() {
-        Cursor cursor = ourInstance.getWritableDatabase().rawQuery("SELECT title, author, text, image FROM liked", null);
+        Cursor cursor = ourInstance.getWritableDatabase().rawQuery("SELECT title, author, text,date,link,image FROM liked", null);
         while (cursor.moveToNext()){
             String title = cursor.getString(cursor.getColumnIndex("title"));
             String author = cursor.getString(cursor.getColumnIndex("author"));
             String text = cursor.getString(cursor.getColumnIndex("text"));
+            String date = cursor.getString(cursor.getColumnIndex("date"));
+            String link = cursor.getString(cursor.getColumnIndex("link"));
 
-            News current = new News(title, author, text);
+            News current = new News(title, author, text,null,date,link);
             likedNews.put(title, current);
         }
     }
@@ -79,6 +81,8 @@ public class DBManager extends SQLiteOpenHelper{
         content.put("title", news.getTitle());
         content.put("author", news.getAuthor());
         content.put("text", news.getText());
+        content.put("date",news.getDate());
+        content.put("link",news.getOriginalArticleURL());
         long id = getWritableDatabase().insert("liked", null, content);
         news.setId((int) id);
         likedNews.put(news.getTitle(), news);

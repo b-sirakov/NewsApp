@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +67,7 @@ public class NewsContentFragment extends Fragment {
         view.findViewById(R.id.like_button_news_content_fragment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                News n = (News) getArguments().getSerializable("content");
+                News n = MainActivity.newsList.get(getArguments().getInt("position"));
                 DBManager.getInstance(getContext()).addNews(n);
             }
         });
@@ -80,12 +81,13 @@ public class NewsContentFragment extends Fragment {
             }
         });
 
-        final News n = (News) getArguments().getSerializable("content");
+        final News n = MainActivity.newsList.get(getArguments().getInt("position"));
         //Toast.makeText(getContext(), n.getTitle() + "" , Toast.LENGTH_SHORT).show();
         image.setImageBitmap(n.getBitmapIMG());
         title.setText(n.getTitle());
         text.setText(n.getText());
         //author.setText(n.getAuthor());
+
         date.setText(n.getDate().substring(0,10) + " | ");
         original.setOnClickListener(new View.OnClickListener() {
             @Override

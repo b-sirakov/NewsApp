@@ -116,10 +116,12 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String title = holder.title.getText().toString();
-                String author = holder.author.getText().toString();
-                String text = holder.text.getText().toString();
-                News current = new News(title, author, text);
+                String title = MainActivity.newsList.get(position).getTitle();
+                String author =MainActivity.newsList.get(position).getAuthor();
+                String text = MainActivity.newsList.get(position).getText();
+                String data=MainActivity.newsList.get(position).getDate();
+                String link=MainActivity.newsList.get(position).getOriginalArticleURL();
+                News current = new News(title, author, text,null,data,link);
                 DBManager.getInstance(context).addNews(current);
             }
         });
@@ -157,9 +159,10 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                     ((MainActivity) context).getRecyclerView().setVisibility(View.GONE);
                 }
                 NewsContentFragment fragment = new NewsContentFragment();
-                News chosen = MainActivity.newsList.get(position);
+//                News chosen = MainActivity.newsList.get(position);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("content", chosen);
+//                bundle.putSerializable("content", chosen);
+                bundle.putInt("position",position);
                 fragment.setArguments(bundle);
 
                 FragmentManager manager = ((AppCompatActivity) context).getSupportFragmentManager();

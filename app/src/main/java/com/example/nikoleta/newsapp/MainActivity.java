@@ -90,6 +90,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+
+        FragmentManager fm=getSupportFragmentManager();
+        if((fm.findFragmentByTag("ContentFragment"))!=null){
+            closeNewsContentFragment();
+            return;
+        }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -290,7 +297,8 @@ public class MainActivity extends AppCompatActivity
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
             List<News> liked = new ArrayList<News>(DBManager.getInstance(this).likedNews.values());
-            recyclerView.setAdapter(new NewsRecyclerViewAdapter(this, liked));
+            newsList.addAll(liked);
+            recyclerView.setAdapter(new NewsRecyclerViewAdapter(this, newsList));
             recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         }
 
@@ -345,7 +353,7 @@ public class MainActivity extends AppCompatActivity
             String url = "";
             InputStream in=null;
 
-            for(int i=position+1;i<=position+5;i++){
+            for(int i=position;i<=position+5;i++){
                 Bitmap bitmap = null;
 
                 if(i>=this.listNews.size()){
