@@ -15,7 +15,6 @@ public class News implements Serializable {
     private Bitmap bitmapIMG;
     private String date;
     private String originalArticleURL;
-    //
 
     public News(String title, String author, String text, String image, String date, String originalArticleURL){
         if(stringInputValidation(title)){
