@@ -190,53 +190,53 @@ public class MainActivity extends AppCompatActivity
 
             //set the URLs for each categort for CNN
             stringHolder.setBusinessURL(
-                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=business%20site%3Acnn.com"
             );
             stringHolder.setHealthURL(
-                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=health%20site%3Acnn.com%20(site_type%3Anews)"
             );
             stringHolder.setPoliticsURL(
-                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=politics%20site%3Acnn.com%20(site_type%3Anews)"
             );
             stringHolder.setSportsURL(
-                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=sport%20site%3Acnn.com%20(site_type%3Anews)"
             );
             stringHolder.setTechnologiesURL(
-                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=technology%20site%3Acnn.com%20(site_type%3Anews)"
             );
-            callAsyncTask("http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+            callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=language%3A(english)%20site%3Acnn.com%20performance_score%3A%3E2%20(site_type%3Anews)");
         } else if (id == R.id.bbc_news) {
             Toast.makeText(this, "BBC News", Toast.LENGTH_SHORT).show();
 
             //set the URLs for each categort for BBC
             stringHolder.setBusinessURL(
-                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=economy%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
             );
             stringHolder.setHealthURL(
-                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=health%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
             );
             stringHolder.setPoliticsURL(
-                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=politics%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
             );
             stringHolder.setSportsURL(
-                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=sport%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
             );
             stringHolder.setTechnologiesURL(
-                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=technology%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
             );
 
-            callAsyncTask("http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+            callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=language%3A(english)%20site%3Abbc.co.uk%20performance_score%3A%3E2%20(site_type%3Anews)");
 
         }else if(id == R.id.fox_news){
@@ -244,36 +244,35 @@ public class MainActivity extends AppCompatActivity
 
             //set the URLs for each categort for FOX News
             stringHolder.setBusinessURL(
-                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=business%20language%3A(english)%20site%3Afoxnews.com%20(site_type%3Anews)"
             );
             stringHolder.setHealthURL(
-                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=health%20language%3A(english)%20site%3Afoxnews.com%20(site_type%3Anews)"
             );
             stringHolder.setPoliticsURL(
-                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=politics%20language%3A(english)%20site%3Afoxnews.com%20(site_type%3Anews)"
             );
             stringHolder.setSportsURL(
-                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=sports%20language%3A(english)%20site%3Afoxnews.com%20(site_type%3Anews)"
             );
             stringHolder.setTechnologiesURL(
-                    "http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=technology%20language%3A(english)%20site%3Afoxnews.com%20(site_type%3Anews)"
             );
 
 
-            callAsyncTask("http://webhose.io/search?token=685aabb3-30d0-4e41-a950-af95718a07cb&" +
+            callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                     "format=json&q=site%3Afoxnews.com");
 
         } else if (id == R.id.business_category) {
             Toast.makeText(this, "Business category selected", Toast.LENGTH_SHORT).show();
             callAsyncTask(stringHolder.getBusinessURL());
 
-        } else if (id == R.id.entertainment_category) {
-            Toast.makeText(this, "Entertainment category selected", Toast.LENGTH_SHORT).show();
+
         } else if (id == R.id.health_category) {
             Toast.makeText(this, "Health category selected", Toast.LENGTH_SHORT).show();
             callAsyncTask(stringHolder.getHealthURL());
@@ -467,13 +466,13 @@ public class MainActivity extends AppCompatActivity
             switch (position){
                 case 0:
                     TabFragment fragment = new TabFragment();
-                    callAsyncTask("http://webhose.io/search?token=48ea2974-f86c-4b77-a968-1c9d64845502&" +
+                    callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=language%3A(english)%20site%3Abbc.com&sort=social.gplus.shares");
                     notifyDataSetChanged();
                     return fragment;
                 case 1:
                     TabFragment fragment2 = new TabFragment();
-                    callAsyncTask("http://webhose.io/search?token=48ea2974-f86c-4b77-a968-1c9d64845502&" +
+                    callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=language%3A(english)%20site%3Acnn.com&sort=social.gplus.shares");
                     notifyDataSetChanged();
                     return fragment2;
