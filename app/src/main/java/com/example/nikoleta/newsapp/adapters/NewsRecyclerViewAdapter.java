@@ -28,7 +28,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
     private int counter;
     private Context context;
     private List<News> news = new ArrayList<News>();
-    private List<Integer> expandetPositions=new ArrayList<Integer>();
+    private List<Integer> expandedPositions =new ArrayList<Integer>();
 
     public NewsRecyclerViewAdapter(Context context, List news){
         counter=0;
@@ -37,16 +37,14 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
     }
 
     public class NewsViewHolder extends RecyclerView.ViewHolder{
-        View row;
-        ImageView image;
-        TextView title;
-        TextView author;
-        TextView text;
-        Button readMoreButton;
-        ImageButton like;
-        ImageButton share;
-        Button readMore;
-        Button expandButton;
+        private View row;
+        private ImageView image;
+        private TextView title;
+        private TextView author;
+        private TextView text;
+        private ImageButton like;
+        private ImageButton share;
+        private Button expandButton;
 
 
         public NewsViewHolder(View row) {
@@ -56,10 +54,8 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
             this.title = (TextView) row.findViewById(R.id.news_title);
             this.author = (TextView) row.findViewById(R.id.news_author);
             this.text = (TextView) row.findViewById(R.id.news_text);
-            this.readMoreButton= (Button) row.findViewById(R.id.read_more_button);
             this.like = (ImageButton) row.findViewById(R.id.like_button);
             this.share = (ImageButton) row.findViewById(R.id.share_button);
-            this.readMore = (Button) row.findViewById(R.id.read_more_button);
             this.expandButton = (Button) row.findViewById(R.id.expand_button);
         }
     }
@@ -86,18 +82,17 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
             }
         }
         holder.title.setText(news.getTitle());
+        readMore(holder.title, position);
         holder.author.setText(news.getAuthor());
         holder.text.setText( (news.getText().length()>200? news.getText().substring(0,200): news.getText())+"..." );
 
         boolean isExpanded=false;
-        if(expandetPositions.contains(new Integer(position))){
+        if(expandedPositions.contains(new Integer(position))){
             isExpanded=true;
         }
         if(isExpanded){
-            holder.expandButton.setText("Close");
             holder.text.setVisibility(View.VISIBLE);
         }else{
-            holder.expandButton.setText("Expand");
             holder.text.setVisibility(View.GONE);
         }
 
@@ -111,8 +106,8 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         }else {
             holder.image.setImageBitmap(news.getBitmapIMG());
         }
+        readMore(holder.image, position);
 
-        // setting like, share and read more actions
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,6 +120,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 DBManager.getInstance(context).addNews(current);
             }
         });
+
         holder.share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,34 +131,33 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         holder.expandButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-//               Transition transition = new AutoTransition();
-//               transition.setDuration(400);
-//               TransitionManager.beginDelayedTransition((ViewGroup) holder.text.getParent(), transition);
-                //visible = !visible;
                 if( holder.text.getVisibility()==View.GONE){
                     holder.text.setVisibility(View.VISIBLE);
-                    holder.expandButton.setText("Close");
-                    expandetPositions.add(position);
+                    holder.expandButton.animate().rotation(180);
+                    expandedPositions.add(position);
                 }else{
-                    holder.expandButton.setText("Expand");
+                    holder.expandButton.animate().rotation(360);
                     holder.text.setVisibility(View.GONE);
-                    expandetPositions.remove(new Integer(position));
+                    expandedPositions.remove(new Integer(position));
                 }
             }
         });
+    }
 
-        holder.readMore.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public int getItemCount() {
+        return news.size();
+    }
+    private void readMore(View view, final int position){
+        view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(context instanceof MainActivity) {
                     ((MainActivity) context).getRecyclerView().setVisibility(View.GONE);
                 }
                 NewsContentFragment fragment = new NewsContentFragment();
-//                News chosen = MainActivity.newsList.get(position);
                 Bundle bundle = new Bundle();
-//                bundle.putSerializable("content", chosen);
-                bundle.putInt("position",position);
+                bundle.putInt("position", position);
                 fragment.setArguments(bundle);
 
                 FragmentManager manager = ((AppCompatActivity) context).getSupportFragmentManager();
@@ -172,10 +167,4 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
             }
         });
     }
-
-    @Override
-    public int getItemCount() {
-        return news.size();
-    }
-
 }

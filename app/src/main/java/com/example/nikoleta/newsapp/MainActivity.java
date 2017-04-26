@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, NewsContentFragment.ComunicatorNewsContentFragment {
+        implements NavigationView.OnNavigationItemSelectedListener, NewsContentFragment.CommunicatorNewsContentFragment {
 
     private RecyclerView recyclerView;
     private static CustomLayoutManager clm;
@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity
                 newsList.clear();
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
-            List<News> liked = new ArrayList<News>(DBManager.getInstance(this).likedNews.values());
+            List<News> liked = new ArrayList<News>(DBManager.getInstance(this).getLikedNews().values());
             newsList.addAll(liked);
             recyclerView.setAdapter(new NewsRecyclerViewAdapter(this, newsList));
             recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -322,6 +322,7 @@ public class MainActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction().remove(frag).commit();
 
         this.getSupportActionBar().show();
+        findViewById(R.id.tabs).setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
     }
 

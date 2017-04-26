@@ -9,12 +9,14 @@ import android.widget.Toast;
 
 import com.example.nikoleta.newsapp.model.News;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 public class DBManager extends SQLiteOpenHelper{
 
     private static Context context;
-    public static HashMap<String, News> likedNews;
+    private static HashMap<String, News> likedNews;
     private static final String SQL_CREATE_TABLE_LIKED = "CREATE TABLE liked(\n" +
             "\n" +
             " id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
@@ -74,7 +76,8 @@ public class DBManager extends SQLiteOpenHelper{
     }
     public void addNews(News news){
         if(isAlreadyAdded(news.getTitle())){
-            Toast.makeText(context, "Already added", Toast.LENGTH_SHORT).show();
+            removeNews(news);
+            Toast.makeText(context, "Unliked", Toast.LENGTH_SHORT).show();
             return;
         }
         ContentValues content = new ContentValues();
@@ -88,8 +91,8 @@ public class DBManager extends SQLiteOpenHelper{
         likedNews.put(news.getTitle(), news);
         Toast.makeText(context, "Liked", Toast.LENGTH_SHORT).show();
     }
-    protected boolean isAlreadyAdded(String title){
-        return likedNews.containsKey(title);
+    public boolean isAlreadyAdded(String title){
+        return getLikedNews().containsKey(title);
     }
     public  void removeNews(News news){
         // TODO no button added in news_row.xml
@@ -98,6 +101,8 @@ public class DBManager extends SQLiteOpenHelper{
         }
         getWritableDatabase().delete("liked", "title = ?", new String[]{news.getTitle()});
         likedNews.remove(news.getTitle());
-        Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
+    }
+    public Map<String, News> getLikedNews(){
+        return Collections.unmodifiableMap(likedNews);
     }
 }

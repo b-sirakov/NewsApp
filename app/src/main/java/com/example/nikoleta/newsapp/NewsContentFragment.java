@@ -1,13 +1,11 @@
 package com.example.nikoleta.newsapp;
 
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +15,9 @@ import android.widget.TextView;
 
 import com.example.nikoleta.newsapp.model.News;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class NewsContentFragment extends Fragment {
 
-    public interface ComunicatorNewsContentFragment{
+    public interface CommunicatorNewsContentFragment {
         void closeNewsContentFragment();
     }
 
@@ -44,6 +38,7 @@ public class NewsContentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        ((AppCompatActivity) getActivity()).findViewById(R.id.tabs).setVisibility(View.GONE);
 
         View view = inflater.inflate(R.layout.fragment_news_content, container, false);
         image = (ImageView) view.findViewById(R.id.image_news_content_fragment);
@@ -57,8 +52,8 @@ public class NewsContentFragment extends Fragment {
         backToMainPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ComunicatorNewsContentFragment comunicator=
-                        (ComunicatorNewsContentFragment) getActivity();
+                CommunicatorNewsContentFragment comunicator=
+                        (CommunicatorNewsContentFragment) getActivity();
 
                 comunicator.closeNewsContentFragment();
             }

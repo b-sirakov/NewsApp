@@ -23,27 +23,32 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true">
 
-            <ImageButton
-                android:id="@+id/back_option"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_arrow_back"
-                android:background="@null"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageButton
+                    android:id="@+id/back_option"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_arrow_back"
+                    android:background="@null"/>
 
-            <ImageButton
-                android:id="@+id/like_button_news_content_fragment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_like_white"
-                android:background="@null"/>
+                <ImageButton
+                    android:id="@+id/share_button_news_content_fragment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_share_white"
+                    android:background="@null"
+                    android:layout_alignParentRight="true"/>
 
-            <ImageButton
-                android:id="@+id/share_button_news_content_fragment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_share_white"
-                android:background="@null"/>
-
+                <ImageButton
+                    android:id="@+id/like_button_news_content_fragment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_like_white"
+                    android:background="@null"
+                    android:layout_toLeftOf="@id/share_button_news_content_fragment"/>
+            </RelativeLayout>
         </android.support.v7.widget.Toolbar>
     </RelativeLayout>
 
