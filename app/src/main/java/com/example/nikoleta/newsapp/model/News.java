@@ -36,7 +36,6 @@ public class News implements Serializable {
             this.originalArticleURL = originalArticleURL;
         }
     }
-
     public News(String title, String author, String text){
 
         if(stringInputValidation(title)){
@@ -62,6 +61,27 @@ public class News implements Serializable {
         }
         this.bitmapIMG = image;
     }
+    public News(String title, String author, String text, Bitmap image, String date, String originalArticleURL){
+        if(stringInputValidation(title)){
+            this.title = title;
+        }
+        if(stringInputValidation(author)){
+            this.author = author;
+        }
+        if(stringInputValidation(text)){
+            this.text = text;
+        }
+        if(image != null){
+            this.bitmapIMG = image;
+        }
+        if(stringInputValidation(date)){
+            this.date = date;
+        }
+        if(stringInputValidation(originalArticleURL)){
+            this.originalArticleURL = originalArticleURL;
+        }
+    }
+
 
     public String getTitle() {
         return title;

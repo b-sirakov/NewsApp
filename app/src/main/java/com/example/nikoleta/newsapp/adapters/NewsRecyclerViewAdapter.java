@@ -1,6 +1,7 @@
 package com.example.nikoleta.newsapp.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -116,7 +117,8 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 String text = MainActivity.newsList.get(position).getText();
                 String data=MainActivity.newsList.get(position).getDate();
                 String link=MainActivity.newsList.get(position).getOriginalArticleURL();
-                News current = new News(title, author, text,null,data,link);
+                Bitmap image = MainActivity.newsList.get(position).getBitmapIMG();
+                News current = new News(title, author, text,image,data,link);
                 DBManager.getInstance(context).addNews(current);
             }
         });

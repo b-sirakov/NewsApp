@@ -23,7 +23,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 
 public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
@@ -97,18 +96,9 @@ public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
                 String date = post.getJSONObject("thread").getString("published");
                 String original = post.getJSONObject("thread").getString("url");
 
-                Log.d("opa",i+"");
-                Log.d("opa", "TITLE: "+title);
-                Log.d("opa", author);
-                Log.d("opa", "DESC: "+desc);
-                Log.d("opa", "imgURL: "+urlImage);
-
                 News news=new News(title,author,desc,urlImage,date,original);
                 MainActivity.newsList.add(news);
             }
-
-            Log.d("opa", posts.length()+"");
-
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
