@@ -16,7 +16,17 @@ public class News implements Serializable {
     private String date;
     private String originalArticleURL;
 
+    private News(){
+        this.title="No title";
+        this.author="Uknown Author";
+        this.text="No Text";
+        //this.imageURL="Unknown img url";
+        this.date="Uknown date";
+        this.originalArticleURL="Unknown url";
+    }
+
     public News(String title, String author, String text, String image, String date, String originalArticleURL){
+        this();
         if(stringInputValidation(title)){
             this.title = title;
         }
@@ -38,7 +48,7 @@ public class News implements Serializable {
     }
 
     public News(String title, String author, String text){
-
+        this();
         if(stringInputValidation(title)){
             this.title = title;
         }
@@ -50,7 +60,7 @@ public class News implements Serializable {
         }
     }
     public News(String title, String author, String text, Bitmap image){
-
+        this();
         if(stringInputValidation(title)){
             this.title = title;
         }

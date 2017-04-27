@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.nikoleta.newsapp.model.News;
+import com.example.nikoleta.newsapp.model.NewsManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NewsContentFragment extends Fragment {
 
-    public interface CommunicatorNewsContentFragment {
+    public  interface CommunicatorNewsContentFragment {
         void closeNewsContentFragment();
     }
 
@@ -29,9 +34,10 @@ public class NewsContentFragment extends Fragment {
     TextView original;
     RecyclerView recyclerView;
     ImageButton backToMainPageButton;
+    List<News> list=new ArrayList<>();
 
     public NewsContentFragment() {
-        // Required empty public constructor
+
     }
 
     @Override
@@ -39,6 +45,15 @@ public class NewsContentFragment extends Fragment {
                              Bundle savedInstanceState) {
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         ((AppCompatActivity) getActivity()).findViewById(R.id.tabs).setVisibility(View.GONE);
+        if(getActivity()==null){
+            Log.d("OMG","VLIZA");
+        }
+        if(getActivity().getSupportFragmentManager().findFragmentByTag("NewsFragment")!=null){
+            list= NewsManager.getInstance().getCategoryNewsList();
+
+        }else {
+            list = MainActivity.newsList;
+        }
 
         View view = inflater.inflate(R.layout.fragment_news_content, container, false);
         image = (ImageView) view.findViewById(R.id.image_news_content_fragment);
@@ -62,7 +77,7 @@ public class NewsContentFragment extends Fragment {
         view.findViewById(R.id.like_button_news_content_fragment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                News n = MainActivity.newsList.get(getArguments().getInt("position"));
+                News n = list.get(getArguments().getInt("position"));
                 DBManager.getInstance(getContext()).addNews(n);
             }
         });
@@ -76,7 +91,7 @@ public class NewsContentFragment extends Fragment {
             }
         });
 
-        final News n = MainActivity.newsList.get(getArguments().getInt("position"));
+        final News n = list.get(getArguments().getInt("position"));
         //Toast.makeText(getContext(), n.getTitle() + "" , Toast.LENGTH_SHORT).show();
         image.setImageBitmap(n.getBitmapIMG());
         title.setText(n.getTitle());

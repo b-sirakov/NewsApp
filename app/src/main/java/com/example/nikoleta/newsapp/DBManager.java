@@ -7,10 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
+import com.example.nikoleta.newsapp.adapters.NewsRecyclerViewAdapter;
 import com.example.nikoleta.newsapp.model.News;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DBManager extends SQLiteOpenHelper{
@@ -89,7 +91,8 @@ public class DBManager extends SQLiteOpenHelper{
         long id = getWritableDatabase().insert("liked", null, content);
         news.setId((int) id);
         likedNews.put(news.getTitle(), news);
-        Toast.makeText(context, "Liked", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Like", Toast.LENGTH_SHORT).show();
+
     }
     public boolean isAlreadyAdded(String title){
         return getLikedNews().containsKey(title);
@@ -101,6 +104,7 @@ public class DBManager extends SQLiteOpenHelper{
         }
         getWritableDatabase().delete("liked", "title = ?", new String[]{news.getTitle()});
         likedNews.remove(news.getTitle());
+
     }
     public Map<String, News> getLikedNews(){
         return Collections.unmodifiableMap(likedNews);

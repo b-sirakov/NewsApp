@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity
     private ProgressBar progBar;
     private ProgressBar progBar2;
     private static StringBuilder jsonText;
-    public static ArrayList<News> newsList;
+    public static  ArrayList<News> newsList;
     public static List<News> foundNews=new ArrayList<>();
     private StringHolder stringHolder;
     private MaterialSearchView searchView;
@@ -72,10 +72,15 @@ public class MainActivity extends AppCompatActivity
         progBar2= (ProgressBar) findViewById(R.id.progress_bar2);
         clm=new CustomLayoutManager(this);
         stringHolder=new StringHolder();
+        newsList = new ArrayList<>();
+        NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(this, newsList);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(clm);
+
 
         getSupportActionBar().setTitle("NewsApp");
 
-        newsList = new ArrayList<>();
+
         jsonText=new StringBuilder("");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -95,6 +100,9 @@ public class MainActivity extends AppCompatActivity
         if((fm.findFragmentByTag("ContentFragment"))!=null){
             closeNewsContentFragment();
             return;
+        }
+        if(fm.findFragmentByTag("NewsFragment")!=null){
+            fm.findFragmentByTag("NewsFragment").getView().setVisibility(View.VISIBLE);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -122,7 +130,7 @@ public class MainActivity extends AppCompatActivity
             public void onSearchViewClosed() {
                 foundNews.clear();
                 //If closed Search View , recycle view will be empty
-                NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, foundNews);
+                NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, newsList);
                 recyclerView.setAdapter(adapter);
             }
         });
@@ -179,6 +187,52 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public void setCategoriesURLforBBC(){
+        //set the URLs for each categort for BBC
+        stringHolder.setBusinessURL(
+                "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
+                        "format=json&q=economy%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
+        );
+        stringHolder.setHealthURL(
+                "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
+                        "format=json&q=health%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
+        );
+        stringHolder.setPoliticsURL(
+                "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
+                        "format=json&q=politics%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
+        );
+        stringHolder.setSportsURL(
+                "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
+                        "format=json&q=sport%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
+        );
+        stringHolder.setTechnologiesURL(
+                "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
+                        "format=json&q=technology%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
+        );
+    }
+    public void setCategoriesURLforCNN(){
+        //set the URLs for each categort for CNN
+        stringHolder.setBusinessURL(
+                        "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
+                        "format=json&q=business%20site%3Acnn.com"
+        );
+        stringHolder.setHealthURL(
+                "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
+                        "format=json&q=health%20site%3Acnn.com%20(site_type%3Anews)"
+        );
+        stringHolder.setPoliticsURL(
+                                           "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
+                        "format=json&q=politics%20site%3Acnn.com%20(site_type%3Anews)");
+        stringHolder.setSportsURL(
+                                            "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
+                        "format=json&q=sport%20site%3Acnn.com%20(site_type%3Anews)"
+        );
+        stringHolder.setTechnologiesURL(
+                                           "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
+                        "format=json&q=technology%20site%3Acnn.com%20(site_type%3Anews)"
+        );
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -187,91 +241,28 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.cnn_news) {
             Toast.makeText(this, "CNN News", Toast.LENGTH_SHORT).show();
-
-            //set the URLs for each categort for CNN
-            stringHolder.setBusinessURL(
-                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=business%20site%3Acnn.com"
-            );
-            stringHolder.setHealthURL(
-                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=health%20site%3Acnn.com%20(site_type%3Anews)"
-            );
-            stringHolder.setPoliticsURL(
-                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=politics%20site%3Acnn.com%20(site_type%3Anews)"
-            );
-            stringHolder.setSportsURL(
-                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=sport%20site%3Acnn.com%20(site_type%3Anews)"
-            );
-            stringHolder.setTechnologiesURL(
-                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=technology%20site%3Acnn.com%20(site_type%3Anews)"
-            );
+            setCategoriesURLforCNN();
             callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=language%3A(english)%20site%3Acnn.com%20performance_score%3A%3E2%20(site_type%3Anews)");
-        } else if (id == R.id.bbc_news) {
+                    "format=json&q=language%3A(english)%20site%3Acnn.com%20performance_score%3A%3E2%20(site_type%3Anews)");
+
+        }else if (id == R.id.bbc_news) {
             Toast.makeText(this, "BBC News", Toast.LENGTH_SHORT).show();
-
-            //set the URLs for each categort for BBC
-            stringHolder.setBusinessURL(
-                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=economy%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
-            );
-            stringHolder.setHealthURL(
-                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=health%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
-            );
-            stringHolder.setPoliticsURL(
-                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=politics%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
-            );
-            stringHolder.setSportsURL(
-                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=sport%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
-            );
-            stringHolder.setTechnologiesURL(
-                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=technology%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
-            );
-
+            setCategoriesURLforBBC();
             callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=language%3A(english)%20site%3Abbc.co.uk%20performance_score%3A%3E2%20(site_type%3Anews)");
+                    "format=json&q=language%3A(english)%20site%3Abbc.co.uk%20performance_score%3A%3E2%20(site_type%3Anews)");
 
-        }else if(id == R.id.fox_news){
-            Toast.makeText(this, "FOX News", Toast.LENGTH_SHORT).show();
-
-            //set the URLs for each categort for FOX News
-            stringHolder.setBusinessURL(
-                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=business%20language%3A(english)%20site%3Afoxnews.com%20(site_type%3Anews)"
-            );
-            stringHolder.setHealthURL(
-                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=health%20language%3A(english)%20site%3Afoxnews.com%20(site_type%3Anews)"
-            );
-            stringHolder.setPoliticsURL(
-                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=politics%20language%3A(english)%20site%3Afoxnews.com%20(site_type%3Anews)"
-            );
-            stringHolder.setSportsURL(
-                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=sports%20language%3A(english)%20site%3Afoxnews.com%20(site_type%3Anews)"
-            );
-            stringHolder.setTechnologiesURL(
-                    "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=technology%20language%3A(english)%20site%3Afoxnews.com%20(site_type%3Anews)"
-            );
-
-
-            callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                    "format=json&q=site%3Afoxnews.com");
-
-        } else if (id == R.id.business_category) {
+          }else if (id == R.id.business_category) {
             Toast.makeText(this, "Business category selected", Toast.LENGTH_SHORT).show();
-            callAsyncTask(stringHolder.getBusinessURL());
 
+            recyclerView.setVisibility(View.GONE);
+            getSupportActionBar().hide();
+
+            getSupportFragmentManager()
+                    .beginTransaction().add(R.id.layout_main_activity,new NewsListFragment(),"NewsFragment")
+                    .commit();
+            getSupportFragmentManager().executePendingTransactions();
+
+            callAsyncTask(stringHolder.getBusinessURL());
 
         } else if (id == R.id.health_category) {
             Toast.makeText(this, "Health category selected", Toast.LENGTH_SHORT).show();
@@ -293,6 +284,9 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(this, "Liked News", Toast.LENGTH_SHORT).show();
             if (!newsList.isEmpty()) {
                 newsList.clear();
+                if(recyclerView==null){
+                    Log.d("GGG","DA");
+                }
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
             List<News> liked = new ArrayList<News>(DBManager.getInstance(this).getLikedNews().values());
@@ -316,13 +310,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void closeNewsContentFragment() {
-
-        android.support.v4.app.Fragment frag = getSupportFragmentManager().findFragmentByTag("ContentFragment");
+        FragmentManager fm=getSupportFragmentManager();
+        android.support.v4.app.Fragment frag = fm.findFragmentByTag("ContentFragment");
         getSupportFragmentManager().beginTransaction().remove(frag).commit();
 
-        this.getSupportActionBar().show();
-        findViewById(R.id.tabs).setVisibility(View.VISIBLE);
-        recyclerView.setVisibility(View.VISIBLE);
+        if(fm.findFragmentByTag("NewsFragment")!=null){
+            fm.findFragmentByTag("NewsFragment").getView().setVisibility(View.VISIBLE);
+        }else {
+            this.getSupportActionBar().show();
+            findViewById(R.id.tabs).setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
+
     }
 
     public class DownloadSmallAmountOfImages extends AsyncTask<Integer,Void,Void>{
@@ -332,11 +331,17 @@ public class MainActivity extends AppCompatActivity
         private ProgressBar progBar;
         private MainActivity.CustomLayoutManager clm;
 
-        public DownloadSmallAmountOfImages(Context context) {
+        public DownloadSmallAmountOfImages(Context context,List<News> listNews) {
             this.context = context;
-            if(context instanceof MainActivity){
+
+            if(getSupportFragmentManager().findFragmentByTag("NewsFrag")!=null){
+                NewsListFragment frag= (NewsListFragment) getSupportFragmentManager().findFragmentByTag("NewsFragment");
+                progBar= (ProgressBar) frag.getView().findViewById(R.id.progress_bar2);
+                this.listNews=listNews;
+                clm=frag.getCustomLayoutManagerFrag();
+            }else{
                 progBar=MainActivity.this.getProgBar2();
-                listNews=MainActivity.newsList;
+                this.listNews=listNews;
                 clm=MainActivity.getClm();
             }
         }
@@ -345,6 +350,8 @@ public class MainActivity extends AppCompatActivity
         protected void onPreExecute() {
                 clm.setScrollEnabled(false);
                 progBar.setVisibility(View.VISIBLE);
+            recyclerView.stopScroll();
+
         }
 
         @Override
@@ -359,6 +366,7 @@ public class MainActivity extends AppCompatActivity
                 if(i>=this.listNews.size()){
                     return null;
                 }
+                Log.d("Count","Kartinki-"+i);
                 url=this.listNews.get(i).getImageURL();
                 try {
                     in = new java.net.URL(url).openStream();
@@ -384,6 +392,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Void aVoid) {
                 progBar.setVisibility(View.GONE);
+
                 clm.setScrollEnabled(true);
         }
     }
@@ -465,12 +474,14 @@ public class MainActivity extends AppCompatActivity
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
+                    setCategoriesURLforBBC();
                     TabFragment fragment = new TabFragment();
                     callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=language%3A(english)%20site%3Abbc.com&sort=social.gplus.shares");
                     notifyDataSetChanged();
                     return fragment;
                 case 1:
+                    setCategoriesURLforCNN();
                     TabFragment fragment2 = new TabFragment();
                     callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                             "format=json&q=language%3A(english)%20site%3Acnn.com&sort=social.gplus.shares");

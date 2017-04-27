@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         private ImageButton like;
         private ImageButton share;
         private Button expandButton;
+        private TextView dateTv;
 
 
         public NewsViewHolder(View row) {
@@ -57,6 +59,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
             this.like = (ImageButton) row.findViewById(R.id.like_button);
             this.share = (ImageButton) row.findViewById(R.id.share_button);
             this.expandButton = (Button) row.findViewById(R.id.expand_button);
+            this.dateTv= (TextView) row.findViewById(R.id.date_tv);
         }
     }
 
@@ -72,19 +75,31 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
     public void onBindViewHolder(final NewsRecyclerViewAdapter.NewsViewHolder holder, final int position) {
         News news = this.news.get(position);
         if(context instanceof MainActivity) {
-            if (position > 0 && position % 5 == 0) {
+            if (position >= 0 && position % 5 == 0) {
+
                 if (counter < position) {
-                    counter = position;
+//                    Log.d("Count","Vliza-POSITION"+position);
+//                    Log.d("Count","Vliza-COUNTER"+counter);
+                    counter += 5;
+
+                    if(( (AppCompatActivity) context).getSupportFragmentManager().findFragmentByTag("NewsFragment")!=null){
+
+                    }
                     MainActivity ma = (MainActivity) context;
-                    MainActivity.DownloadSmallAmountOfImages downloadTask = ma.new DownloadSmallAmountOfImages(context);
+                    MainActivity.getClm().setScrollEnabled(false);
+                    MainActivity.DownloadSmallAmountOfImages downloadTask = ma.new DownloadSmallAmountOfImages(context,this.news);
                     downloadTask.execute(counter);
                 }
             }
         }
+        Log.d("Count",""+MainActivity.getClm().canScrollVertically());
+        Log.d("Count",""+position);
+
         holder.title.setText(news.getTitle());
         readMore(holder.title, position);
         holder.author.setText(news.getAuthor());
         holder.text.setText( (news.getText().length()>200? news.getText().substring(0,200): news.getText())+"..." );
+        holder.dateTv.setText(news.getDate().substring(0,10));
 
         boolean isExpanded=false;
         if(expandedPositions.contains(new Integer(position))){
@@ -107,6 +122,8 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
             holder.image.setImageBitmap(news.getBitmapIMG());
         }
         readMore(holder.image, position);
+
+
 
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,6 +148,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         holder.expandButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if( holder.text.getVisibility()==View.GONE){
                     holder.text.setVisibility(View.VISIBLE);
                     holder.expandButton.animate().rotation(180);
@@ -148,6 +166,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
     public int getItemCount() {
         return news.size();
     }
+
     private void readMore(View view, final int position){
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,6 +183,9 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 manager.beginTransaction()
                         .add(R.id.layout_main_activity, fragment, "ContentFragment")
                         .commit();
+                if(manager.findFragmentByTag("NewsFragment")!=null) {
+                    manager.findFragmentByTag("NewsFragment").getView().setVisibility(View.GONE);
+                }
             }
         });
     }

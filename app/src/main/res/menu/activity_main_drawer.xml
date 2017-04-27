@@ -19,9 +19,6 @@
                 android:id="@+id/business_category"
                 android:title="@string/business_category" />
             <item
-                android:id="@+id/entertainment_category"
-                android:title="@string/entertainment_category" />
-            <item
                 android:id="@+id/health_category"
                 android:title="@string/health_category" />
             <item
