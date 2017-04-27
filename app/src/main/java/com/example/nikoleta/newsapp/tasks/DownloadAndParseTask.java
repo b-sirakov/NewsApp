@@ -133,9 +133,6 @@ public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
                 News news=new News(title,author,desc,urlImage,date,original);
                 taskNewsList.add(news);
             }
-
-            Log.d("opa", posts.length()+"");
-
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

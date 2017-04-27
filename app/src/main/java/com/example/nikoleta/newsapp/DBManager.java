@@ -4,12 +4,16 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.widget.Toast;
 
 import com.example.nikoleta.newsapp.adapters.NewsRecyclerViewAdapter;
 import com.example.nikoleta.newsapp.model.News;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -64,15 +68,17 @@ public class DBManager extends SQLiteOpenHelper{
         return getWritableDatabase();
     }
     private static void loadNews() {
-        Cursor cursor = ourInstance.getWritableDatabase().rawQuery("SELECT title, author, text,date,link,image FROM liked", null);
+        Cursor cursor = ourInstance.getWritableDatabase().rawQuery("SELECT id, title, author, text,date,link,image FROM liked", null);
         while (cursor.moveToNext()){
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
             String title = cursor.getString(cursor.getColumnIndex("title"));
             String author = cursor.getString(cursor.getColumnIndex("author"));
             String text = cursor.getString(cursor.getColumnIndex("text"));
             String date = cursor.getString(cursor.getColumnIndex("date"));
             String link = cursor.getString(cursor.getColumnIndex("link"));
+            Bitmap image = getInstance(context).getBitmap(id);
 
-            News current = new News(title, author, text,null,date,link);
+            News current = new News(title, author, text, image, date, link);
             likedNews.put(title, current);
         }
     }
@@ -88,6 +94,13 @@ public class DBManager extends SQLiteOpenHelper{
         content.put("text", news.getText());
         content.put("date",news.getDate());
         content.put("link",news.getOriginalArticleURL());
+
+        // insert bitmap
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        news.getBitmapIMG().compress(Bitmap.CompressFormat.PNG, 100, out);
+        byte[] buffer = out.toByteArray();
+        content.put("image", buffer);
+
         long id = getWritableDatabase().insert("liked", null, content);
         news.setId((int) id);
         likedNews.put(news.getTitle(), news);
@@ -109,4 +122,45 @@ public class DBManager extends SQLiteOpenHelper{
     public Map<String, News> getLikedNews(){
         return Collections.unmodifiableMap(likedNews);
     }
+    public Bitmap getBitmap(int id){
+        Bitmap bitmap = null;
+        // Open the database for reading
+        SQLiteDatabase db = this.getReadableDatabase();
+        // Start the transaction.
+        db.beginTransaction();
+
+        try
+        {
+            String selectQuery = "SELECT * FROM "+ "liked" + " WHERE id = " + id;
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if(cursor.getCount() >0)
+            {
+                while (cursor.moveToNext()) {
+                    // Convert blob data to byte array
+                    byte[] blob = cursor.getBlob(cursor.getColumnIndex("image"));
+                    // Convert the byte array to Bitmap
+                    bitmap= BitmapFactory.decodeByteArray(blob, 0, blob.length);
+
+                }
+
+            }
+            db.setTransactionSuccessful();
+
+        }
+        catch (SQLiteException e)
+        {
+            e.printStackTrace();
+
+        }
+        finally
+        {
+            db.endTransaction();
+            // End the transaction.
+            db.close();
+            // Close database
+        }
+        return bitmap;
+
+    }
+
 }
