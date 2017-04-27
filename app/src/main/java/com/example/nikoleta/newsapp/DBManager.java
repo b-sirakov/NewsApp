@@ -66,16 +66,17 @@ public class DBManager extends SQLiteOpenHelper{
         return getWritableDatabase();
     }
     private static void loadNews() {
-        Cursor cursor = ourInstance.getWritableDatabase().rawQuery("SELECT title, author, text,date,link,image FROM liked", null);
+        Cursor cursor = ourInstance.getWritableDatabase().rawQuery("SELECT id, title, author, text,date,link,image FROM liked", null);
         while (cursor.moveToNext()){
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
             String title = cursor.getString(cursor.getColumnIndex("title"));
             String author = cursor.getString(cursor.getColumnIndex("author"));
             String text = cursor.getString(cursor.getColumnIndex("text"));
             String date = cursor.getString(cursor.getColumnIndex("date"));
             String link = cursor.getString(cursor.getColumnIndex("link"));
-            Bitmap image = getInstance(context).getBitmap(0);
+            Bitmap image = getInstance(context).getBitmap(id);
 
-            News current = new News(title, author, text,image,date,link);
+            News current = new News(title, author, text, image, date, link);
             likedNews.put(title, current);
         }
     }
