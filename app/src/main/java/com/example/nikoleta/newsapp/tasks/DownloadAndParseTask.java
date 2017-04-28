@@ -7,15 +7,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.example.nikoleta.newsapp.MainActivity;
-import com.example.nikoleta.newsapp.NewsListFragment;
-import com.example.nikoleta.newsapp.R;
 import com.example.nikoleta.newsapp.adapters.NewsRecyclerViewAdapter;
 import com.example.nikoleta.newsapp.model.News;
-import com.example.nikoleta.newsapp.model.NewsManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +24,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,8 +37,6 @@ public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
     private List<News> taskNewsList;
     private Fragment frag;
 
-
-
     public DownloadAndParseTask(MainActivity activity)  {
         this.activity=activity;
         jsonText= new StringBuilder("");
@@ -52,17 +45,10 @@ public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-        if(activity.getSupportFragmentManager().findFragmentByTag("NewsFragment")!=null){
-            frag=(NewsListFragment) activity.getSupportFragmentManager().findFragmentByTag("NewsFragment");
-            this.taskNewsList= NewsManager.getInstance().getCategoryNewsList();
-            progBar= (ProgressBar) frag.getView().findViewById(R.id.progress_bar_frag_newslist);
-            recyclerView= (RecyclerView) frag.getView().findViewById(R.id.recycler_view_frag_newslist);
-            clm=((NewsListFragment)frag).getCustomLayoutManagerFrag();
-            return;
-        }
-            this.taskNewsList=MainActivity.newsList;
-            progBar=activity.getProgBar();
-            recyclerView=activity.getRecyclerView();
+
+        this.taskNewsList=MainActivity.newsList;
+        progBar=activity.getProgBar();
+        recyclerView=activity.getRecyclerView();
         clm=MainActivity.getClm();
 
     }
@@ -107,6 +93,18 @@ public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
                 boolean isThisTitleRepeated=false;
 
                 for(int a=0;a<titles.size();a++) {
+                    String currenTitle=post.getString("title");
+                    if(currenTitle.isEmpty()||currenTitle==null){
+                        continue;
+                    }
+                    String[] titleByWords=titles.get(a).split(" ");
+                    String[] currenttitleByWords=post.getString("title").split(" ");
+
+                    if(!titles.get(a).isEmpty()&&titleByWords[0].equals(currenttitleByWords[0]) && titleByWords[1].equals(currenttitleByWords[1])
+                            &&titleByWords[2].equals(currenttitleByWords[2])){
+                        isThisTitleRepeated=true;
+                    }
+
                     if (titles.get(a).contains(post.getString("title")) && !titles.get(a).isEmpty()) {
                         isThisTitleRepeated=true;
                     }
@@ -122,13 +120,6 @@ public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
                 String date = post.getJSONObject("thread").getString("published");
                 String original = post.getJSONObject("thread").getString("url");
                 titles.add(title);
-
-                Log.d("opa",i+"");
-                Log.d("opa", "TITLE: "+title);
-                Log.d("opa", author);
-                //Log.d("opa", "DESC: "+desc.substring(0,50));
-                Log.d("opa", "imgURL: "+urlImage);
-                Log.d("opa", "URL: "+original);
 
                 News news=new News(title,author,desc,urlImage,date,original);
                 taskNewsList.add(news);
@@ -186,9 +177,7 @@ public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
         }
 
         protected void onPostExecute(Void avoid) {
-            if(activity.getSupportFragmentManager().findFragmentByTag("NewsFragment")!=null) {
-                Log.d("VLIZAME", "VLIZAAAAA IFa na taska za fragmenta");
-            }
+
             NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(activity, taskNewsList);
             progBar.setVisibility(View.GONE);
             recyclerView.setAdapter(adapter);

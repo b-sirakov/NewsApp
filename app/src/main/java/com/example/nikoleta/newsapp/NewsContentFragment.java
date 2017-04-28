@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.nikoleta.newsapp.model.News;
 import com.example.nikoleta.newsapp.model.NewsManager;
+import com.example.nikoleta.newsapp.tasks.ExtractOrigLinkAndShareTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,6 @@ public class NewsContentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
-        ((AppCompatActivity) getActivity()).findViewById(R.id.tabs).setVisibility(View.GONE);
         if(getActivity()==null){
             Log.d("OMG","VLIZA");
         }
@@ -52,7 +52,11 @@ public class NewsContentFragment extends Fragment {
             list= NewsManager.getInstance().getCategoryNewsList();
 
         }else {
-            list = MainActivity.newsList;
+            if(!MainActivity.foundNews.isEmpty()){
+                list=MainActivity.foundNews;
+            }else {
+                list = MainActivity.newsList;
+            }
         }
 
         View view = inflater.inflate(R.layout.fragment_news_content, container, false);
@@ -85,9 +89,10 @@ public class NewsContentFragment extends Fragment {
         view.findViewById(R.id.share_button_news_content_fragment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-                intent.setType("text/plain");
-                getContext().startActivity(Intent.createChooser(intent, "Sharing Option"));
+                new ExtractOrigLinkAndShareTask(getActivity()).execute(new Integer(getArguments().getInt("position")),null,null);
+//                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+//                intent.setType("text/plain");
+//                getContext().startActivity(Intent.createChooser(intent, "Sharing Option"));
             }
         });
 

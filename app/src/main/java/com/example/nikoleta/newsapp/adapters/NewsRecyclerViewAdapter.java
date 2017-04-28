@@ -93,7 +93,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 }
             }
         }
-        Log.d("Count",""+MainActivity.getClm().canScrollVertically());
+        //Log.d("Count",""+MainActivity.getClm().canScrollVertically());
         Log.d("Count",""+position);
 
         holder.title.setText(news.getTitle());

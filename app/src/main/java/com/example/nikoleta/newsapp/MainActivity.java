@@ -6,12 +6,8 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,12 +15,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nikoleta.newsapp.adapters.NewsRecyclerViewAdapter;
@@ -50,8 +45,7 @@ public class MainActivity extends AppCompatActivity
     public static List<News> foundNews=new ArrayList<>();
     private StringHolder stringHolder;
     private MaterialSearchView searchView;
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-    private ViewPager mViewPager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +53,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
 
         searchView= (MaterialSearchView) findViewById(R.id.search_view_main);
         recyclerView= (RecyclerView) findViewById(R.id.recycler_view_main_activity);
@@ -76,11 +64,7 @@ public class MainActivity extends AppCompatActivity
         NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(this, newsList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(clm);
-
-
         getSupportActionBar().setTitle("NewsApp");
-
-
         jsonText=new StringBuilder("");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -91,6 +75,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        setCategoriesURLforBBC();
+        setCategoriesURLforCNN();
+        stringHolder.setSection("BBC");
+        ((TextView)findViewById(R.id.section_title_tv)).setText(stringHolder.getSection());
+        callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
+                "format=json&q=language%3A(english)%20site%3Abbc.co.uk%20performance_score%3A%3E2%20(site_type%3Anews)");
     }
 
     @Override
@@ -238,55 +229,59 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        TextView titleSection= (TextView) findViewById(R.id.section_title_tv);
         if (id == R.id.cnn_news) {
             Toast.makeText(this, "CNN News", Toast.LENGTH_SHORT).show();
             setCategoriesURLforCNN();
+            stringHolder.setSection("CNN");
+            titleSection.setText(stringHolder.getSection());
             callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                     "format=json&q=language%3A(english)%20site%3Acnn.com%20performance_score%3A%3E2%20(site_type%3Anews)");
 
         }else if (id == R.id.bbc_news) {
             Toast.makeText(this, "BBC News", Toast.LENGTH_SHORT).show();
             setCategoriesURLforBBC();
+            stringHolder.setSection("BBC");
+            titleSection.setText(stringHolder.getSection());
             callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                     "format=json&q=language%3A(english)%20site%3Abbc.co.uk%20performance_score%3A%3E2%20(site_type%3Anews)");
 
           }else if (id == R.id.business_category) {
             Toast.makeText(this, "Business category selected", Toast.LENGTH_SHORT).show();
-
-            recyclerView.setVisibility(View.GONE);
-            getSupportActionBar().hide();
-
-            getSupportFragmentManager()
-                    .beginTransaction().add(R.id.layout_main_activity,new NewsListFragment(),"NewsFragment")
-                    .commit();
-            getSupportFragmentManager().executePendingTransactions();
-
+            stringHolder.setSection("Business");
+            titleSection.setText(stringHolder.getSection());
             callAsyncTask(stringHolder.getBusinessURL());
 
         } else if (id == R.id.health_category) {
             Toast.makeText(this, "Health category selected", Toast.LENGTH_SHORT).show();
+            stringHolder.setSection("Health");
+            titleSection.setText(stringHolder.getSection());
             callAsyncTask(stringHolder.getHealthURL());
 
         } else if (id == R.id.politics_category) {
             Toast.makeText(this, "Politics category selected", Toast.LENGTH_SHORT).show();
+            stringHolder.setSection("Politics");
+            titleSection.setText(stringHolder.getSection());
             callAsyncTask(stringHolder.getPoliticsURL());
 
         } else if (id == R.id.sports_category) {
             Toast.makeText(this, "Sports category selected", Toast.LENGTH_SHORT).show();
+            stringHolder.setSection("Sport");
+            titleSection.setText(stringHolder.getSection());
             callAsyncTask(stringHolder.getSportsURL());
 
         }else if (id == R.id.technology_category) {
             Toast.makeText(this, "Technology category selected", Toast.LENGTH_SHORT).show();
+            titleSection.setText(stringHolder.getSection());
+            stringHolder.setSection("Technology");
             callAsyncTask(stringHolder.getTechnologiesURL());
 
         }else if (id == R.id.liked_news){
             Toast.makeText(this, "Liked News", Toast.LENGTH_SHORT).show();
+            stringHolder.setSection("Liked news");
+            titleSection.setText(stringHolder.getSection());
             if (!newsList.isEmpty()) {
                 newsList.clear();
-                if(recyclerView==null){
-                    Log.d("GGG","DA");
-                }
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
             List<News> liked = new ArrayList<News>(DBManager.getInstance(this).getLikedNews().values());
@@ -318,7 +313,6 @@ public class MainActivity extends AppCompatActivity
             fm.findFragmentByTag("NewsFragment").getView().setVisibility(View.VISIBLE);
         }else {
             this.getSupportActionBar().show();
-            findViewById(R.id.tabs).setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
         }
 
@@ -333,17 +327,9 @@ public class MainActivity extends AppCompatActivity
 
         public DownloadSmallAmountOfImages(Context context,List<News> listNews) {
             this.context = context;
-
-            if(getSupportFragmentManager().findFragmentByTag("NewsFrag")!=null){
-                NewsListFragment frag= (NewsListFragment) getSupportFragmentManager().findFragmentByTag("NewsFragment");
-                progBar= (ProgressBar) frag.getView().findViewById(R.id.progress_bar2);
-                this.listNews=listNews;
-                clm=frag.getCustomLayoutManagerFrag();
-            }else{
-                progBar=MainActivity.this.getProgBar2();
-                this.listNews=listNews;
-                clm=MainActivity.getClm();
-            }
+            progBar=MainActivity.this.getProgBar2();
+            this.listNews=listNews;
+            clm=MainActivity.getClm();
         }
 
         @Override
@@ -438,73 +424,5 @@ public class MainActivity extends AppCompatActivity
 
     public ProgressBar getProgBar2() {
         return progBar2;
-    }
-
-    // tabs functionality
-    public static class PlaceholderFragment extends Fragment {
-
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_tab, container, false);
-            return rootView;
-        }
-    }
-
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            switch (position){
-                case 0:
-                    setCategoriesURLforBBC();
-                    TabFragment fragment = new TabFragment();
-                    callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=language%3A(english)%20site%3Abbc.com&sort=social.gplus.shares");
-                    notifyDataSetChanged();
-                    return fragment;
-                case 1:
-                    setCategoriesURLforCNN();
-                    TabFragment fragment2 = new TabFragment();
-                    callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                            "format=json&q=language%3A(english)%20site%3Acnn.com&sort=social.gplus.shares");
-                    notifyDataSetChanged();
-                    return fragment2;
-            }
-            return null;
-        }
-
-        @Override
-        public int getCount() {
-            return 2;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "BBC Top news";
-                case 1:
-                    return "CNN Top news";
-            }
-            return null;
-        }
     }
 }

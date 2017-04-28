@@ -32,8 +32,8 @@ public class ExtractOrigLinkAndShareTask extends AsyncTask<Integer,Void,Void> {
             index=position[0];
                 URLConnection connection =
                         (new URL(MainActivity.newsList.get(index).getOriginalArticleURL()).openConnection());
-                connection.setConnectTimeout(5000);
-                connection.setReadTimeout(5000);
+//                connection.setConnectTimeout(5000);
+//                connection.setReadTimeout(5000);
                 connection.connect();
 
                 // Read and store the result line by line then return the entire string.
@@ -44,6 +44,7 @@ public class ExtractOrigLinkAndShareTask extends AsyncTask<Integer,Void,Void> {
                     html.append(line);
                 }
                 if(in!=null) {
+                    Log.d("DABE","in");
                     in.close();
                 }
 
@@ -61,7 +62,8 @@ public class ExtractOrigLinkAndShareTask extends AsyncTask<Integer,Void,Void> {
 
 
         } catch (MalformedURLException e) {
-            Log.d("ttt","da1");
+            e.printStackTrace();
+            Log.d("ttt","da1" );
             e.printStackTrace();
         } catch (IOException e) {
             Log.d("ttt","da2");
@@ -73,6 +75,7 @@ public class ExtractOrigLinkAndShareTask extends AsyncTask<Integer,Void,Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+        Log.d("DABE",MainActivity.newsList.get(index).getOriginalArticleURL());
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         sharingIntent.putExtra(Intent.EXTRA_TEXT, MainActivity.newsList.get(index).getOriginalArticleURL());

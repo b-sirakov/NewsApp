@@ -9,7 +9,13 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.nikoleta.newsapp.MainActivity"
     tools:showIn="@layout/app_bar_main">
-
+    <TextView
+        android:id="@+id/section_title_tv"
+        android:gravity="center"
+        android:textSize="17dp"
+        android:text="CATEGORY"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <ProgressBar
 
         android:layout_weight="1"

@@ -76,7 +76,12 @@ public class DBManager extends SQLiteOpenHelper{
             String text = cursor.getString(cursor.getColumnIndex("text"));
             String date = cursor.getString(cursor.getColumnIndex("date"));
             String link = cursor.getString(cursor.getColumnIndex("link"));
-            Bitmap image = getInstance(context).getBitmap(id);
+            byte[] blob = cursor.getBlob(cursor.getColumnIndex("image"));
+            // Convert the byte array to Bitmap
+            Bitmap image = null;
+            if(blob!=null) {
+                image = BitmapFactory.decodeByteArray(blob, 0, blob.length);
+            }
 
             News current = new News(title, author, text, image, date, link);
             likedNews.put(title, current);
@@ -121,46 +126,6 @@ public class DBManager extends SQLiteOpenHelper{
     }
     public Map<String, News> getLikedNews(){
         return Collections.unmodifiableMap(likedNews);
-    }
-    public Bitmap getBitmap(int id){
-        Bitmap bitmap = null;
-        // Open the database for reading
-        SQLiteDatabase db = this.getReadableDatabase();
-        // Start the transaction.
-        db.beginTransaction();
-
-        try
-        {
-            String selectQuery = "SELECT * FROM "+ "liked" + " WHERE id = " + id;
-            Cursor cursor = db.rawQuery(selectQuery, null);
-            if(cursor.getCount() >0)
-            {
-                while (cursor.moveToNext()) {
-                    // Convert blob data to byte array
-                    byte[] blob = cursor.getBlob(cursor.getColumnIndex("image"));
-                    // Convert the byte array to Bitmap
-                    bitmap= BitmapFactory.decodeByteArray(blob, 0, blob.length);
-
-                }
-
-            }
-            db.setTransactionSuccessful();
-
-        }
-        catch (SQLiteException e)
-        {
-            e.printStackTrace();
-
-        }
-        finally
-        {
-            db.endTransaction();
-            // End the transaction.
-            db.close();
-            // Close database
-        }
-        return bitmap;
-
     }
 
 }
