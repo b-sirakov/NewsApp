@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity
     public static List<News> foundNews=new ArrayList<>();
     private StringHolder stringHolder;
     private MaterialSearchView searchView;
+    private TextView titleSection;
 
 
     @Override
@@ -229,65 +230,39 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        TextView titleSection= (TextView) findViewById(R.id.section_title_tv);
-        if (id == R.id.cnn_news) {
-            Toast.makeText(this, "CNN News", Toast.LENGTH_SHORT).show();
-            setCategoriesURLforCNN();
-            stringHolder.setSection("CNN");
-            titleSection.setText(stringHolder.getSection());
-            callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                    "format=json&q=language%3A(english)%20site%3Acnn.com%20performance_score%3A%3E2%20(site_type%3Anews)");
+        titleSection= (TextView) findViewById(R.id.section_title_tv);
 
-        }else if (id == R.id.bbc_news) {
-            Toast.makeText(this, "BBC News", Toast.LENGTH_SHORT).show();
-            setCategoriesURLforBBC();
-            stringHolder.setSection("BBC");
-            titleSection.setText(stringHolder.getSection());
-            callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                    "format=json&q=language%3A(english)%20site%3Abbc.co.uk%20performance_score%3A%3E2%20(site_type%3Anews)");
-
-          }else if (id == R.id.business_category) {
-            Toast.makeText(this, "Business category selected", Toast.LENGTH_SHORT).show();
-            stringHolder.setSection("Business");
-            titleSection.setText(stringHolder.getSection());
-            callAsyncTask(stringHolder.getBusinessURL());
-
-        } else if (id == R.id.health_category) {
-            Toast.makeText(this, "Health category selected", Toast.LENGTH_SHORT).show();
-            stringHolder.setSection("Health");
-            titleSection.setText(stringHolder.getSection());
-            callAsyncTask(stringHolder.getHealthURL());
-
-        } else if (id == R.id.politics_category) {
-            Toast.makeText(this, "Politics category selected", Toast.LENGTH_SHORT).show();
-            stringHolder.setSection("Politics");
-            titleSection.setText(stringHolder.getSection());
-            callAsyncTask(stringHolder.getPoliticsURL());
-
-        } else if (id == R.id.sports_category) {
-            Toast.makeText(this, "Sports category selected", Toast.LENGTH_SHORT).show();
-            stringHolder.setSection("Sport");
-            titleSection.setText(stringHolder.getSection());
-            callAsyncTask(stringHolder.getSportsURL());
-
-        }else if (id == R.id.technology_category) {
-            Toast.makeText(this, "Technology category selected", Toast.LENGTH_SHORT).show();
-            titleSection.setText(stringHolder.getSection());
-            stringHolder.setSection("Technology");
-            callAsyncTask(stringHolder.getTechnologiesURL());
-
-        }else if (id == R.id.liked_news){
-            Toast.makeText(this, "Liked News", Toast.LENGTH_SHORT).show();
-            stringHolder.setSection("Liked news");
-            titleSection.setText(stringHolder.getSection());
-            if (!newsList.isEmpty()) {
-                newsList.clear();
-                recyclerView.getAdapter().notifyDataSetChanged();
-            }
-            List<News> liked = new ArrayList<News>(DBManager.getInstance(this).getLikedNews().values());
-            newsList.addAll(liked);
-            recyclerView.setAdapter(new NewsRecyclerViewAdapter(this, newsList));
-            recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        switch (id){
+            case R.id.cnn_news:
+                setCategoriesURLforCNN();
+                fillData("CNN News", "CNN", "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
+                        "format=json&q=language%3A(english)%20site%3Acnn.com%20performance_score%3A%3E2%20(site_type%3Anews)");
+                break;
+            case R.id.bbc_news:
+                setCategoriesURLforBBC();
+                fillData("BBC News", "BBC", "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
+                        "format=json&q=language%3A(english)%20site%3Abbc.co.uk%20performance_score%3A%3E2%20(site_type%3Anews)");
+                break;
+            case R.id.business_category:
+                fillData("Business category selected", "Business", stringHolder.getBusinessURL());
+                break;
+            case R.id.health_category:
+                fillData("Health category selected", "Health",stringHolder.getHealthURL() );
+                break;
+            case R.id.politics_category:
+                fillData("Politics category selected", "Politics", stringHolder.getPoliticsURL());
+                break;
+            case R.id.sports_category:
+                fillData("Sports category selected", "Sports", stringHolder.getSportsURL());
+                break;
+            case R.id.technology_category:
+                fillData("Technology category selected", "Technology", stringHolder.getTechnologiesURL());
+                break;
+            case R.id.liked_news:
+                fillLikedNewsData();
+                break;
+            default:
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -295,12 +270,32 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void callAsyncTask(String url){
+    public void fillData(String toast, String category, String url){
+        Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
+        stringHolder.setSection(category);
+        titleSection.setText(stringHolder.getSection());
+        callAsyncTask(url);
+    }
+    public void checkRecyclerViewCondition(){
+        // used in callAsyncTask method
         if (!newsList.isEmpty()) {
             newsList.clear();
             recyclerView.getAdapter().notifyDataSetChanged();
         }
+    }
+    public void callAsyncTask(String url){
+        checkRecyclerViewCondition();
         new DownloadAndParseTask(this).execute(url);
+    }
+    public void fillLikedNewsData(){
+        Toast.makeText(this, "Liked News", Toast.LENGTH_SHORT).show();
+        stringHolder.setSection("Liked news");
+        titleSection.setText(stringHolder.getSection());
+        checkRecyclerViewCondition();
+        List<News> liked = new ArrayList<News>(DBManager.getInstance(this).getLikedNews().values());
+        newsList.addAll(liked);
+        recyclerView.setAdapter(new NewsRecyclerViewAdapter(this, newsList));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
     @Override

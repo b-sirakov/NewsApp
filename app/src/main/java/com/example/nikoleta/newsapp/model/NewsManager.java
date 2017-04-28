@@ -24,7 +24,7 @@ public class NewsManager {
             categoryNewsList.add(news);
         }
     }
-    
+
     private NewsManager() {
     }
 }
