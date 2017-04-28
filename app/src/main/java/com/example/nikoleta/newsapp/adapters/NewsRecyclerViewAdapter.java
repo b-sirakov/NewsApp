@@ -27,15 +27,17 @@ import java.util.List;
 
 public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerViewAdapter.NewsViewHolder>{
 
+    private int code;
     private int counter;
     private Context context;
     private List<News> news = new ArrayList<News>();
     private List<Integer> expandedPositions =new ArrayList<Integer>();
 
-    public NewsRecyclerViewAdapter(Context context, List news){
+    public NewsRecyclerViewAdapter(Context context, List news, int code){
         counter=0;
         this.context = context;
         this.news = news;
+        this.code = code;
     }
 
     public class NewsViewHolder extends RecyclerView.ViewHolder{
@@ -48,6 +50,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         private ImageButton share;
         private Button expandButton;
         private TextView dateTv;
+        private ImageButton delete;
 
 
         public NewsViewHolder(View row) {
@@ -61,6 +64,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
             this.share = (ImageButton) row.findViewById(R.id.share_button);
             this.expandButton = (Button) row.findViewById(R.id.expand_button);
             this.dateTv= (TextView) row.findViewById(R.id.date_tv);
+            this.delete = (ImageButton) row.findViewById(R.id.remove_news_button);
         }
     }
 
@@ -74,7 +78,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
 
     @Override
     public void onBindViewHolder(final NewsRecyclerViewAdapter.NewsViewHolder holder, final int position) {
-        News news = this.news.get(position);
+        final News current = this.news.get(position);
         if(context instanceof MainActivity) {
             if (position >= 0 && position % 5 == 0) {
 
@@ -96,11 +100,11 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         //Log.d("Count",""+MainActivity.getClm().canScrollVertically());
         Log.d("Count",""+position);
 
-        holder.title.setText(news.getTitle());
+        holder.title.setText(current.getTitle());
         readMore(holder.title, position);
-        holder.author.setText(news.getAuthor());
-        holder.text.setText( (news.getText().length()>200? news.getText().substring(0,200): news.getText())+"..." );
-        holder.dateTv.setText(news.getDate().substring(0,10));
+        holder.author.setText(current.getAuthor());
+        holder.text.setText( (current.getText().length()>200? current.getText().substring(0,200): current.getText())+"..." );
+        holder.dateTv.setText(current.getDate().substring(0,10));
 
         boolean isExpanded=false;
         if(expandedPositions.contains(new Integer(position))){
@@ -112,15 +116,15 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
             holder.text.setVisibility(View.GONE);
         }
 
-        if(news.getBitmapIMG()==null){
-            if(news.getAuthor().equals("cnn.com")) {
+        if(current.getBitmapIMG()==null){
+            if(current.getAuthor().equals("cnn.com")) {
                 holder.image.setImageResource(R.drawable.cnn);
             }
-            if(news.getAuthor().equals("bbc.co.uk")){
+            if(current.getAuthor().equals("bbc.co.uk")){
                 holder.image.setImageResource(R.drawable.bbc);
             }
         }else {
-            holder.image.setImageBitmap(news.getBitmapIMG());
+            holder.image.setImageBitmap(current.getBitmapIMG());
         }
         readMore(holder.image, position);
 
@@ -150,7 +154,6 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         holder.expandButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if( holder.text.getVisibility()==View.GONE){
                     holder.text.setVisibility(View.VISIBLE);
                     holder.expandButton.animate().rotation(180);
@@ -162,13 +165,25 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 }
             }
         });
+        if(code == 1) {
+            holder.delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DBManager.getInstance(context).removeNews(current);
+                    news.remove(position);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, news.size());
+                }
+            });
+        }else {
+            holder.delete.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public int getItemCount() {
         return news.size();
     }
-
     private void readMore(View view, final int position){
         view.setOnClickListener(new View.OnClickListener() {
             @Override

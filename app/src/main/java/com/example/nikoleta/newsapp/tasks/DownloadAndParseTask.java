@@ -178,7 +178,7 @@ public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
 
         protected void onPostExecute(Void avoid) {
 
-            NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(activity, taskNewsList);
+            NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(activity, taskNewsList, 0);
             progBar.setVisibility(View.GONE);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(clm);

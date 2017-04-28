@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity
         clm=new CustomLayoutManager(this);
         stringHolder=new StringHolder();
         newsList = new ArrayList<>();
-        NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(this, newsList);
+        NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(this, newsList, 0);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(clm);
         getSupportActionBar().setTitle("NewsApp");
@@ -77,8 +77,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        setCategoriesURLforBBC();
         setCategoriesURLforCNN();
+        setCategoriesURLforBBC();
         stringHolder.setSection("BBC");
         ((TextView)findViewById(R.id.section_title_tv)).setText(stringHolder.getSection());
         callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity
             public void onSearchViewClosed() {
                 foundNews.clear();
                 //If closed Search View , recycle view will be empty
-                NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, newsList);
+                NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, newsList, 0);
                 recyclerView.setAdapter(adapter);
             }
         });
@@ -145,12 +145,12 @@ public class MainActivity extends AppCompatActivity
                             foundNews.add(news);
                         }
                     }
-                    NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, foundNews);
+                    NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, foundNews, 0);
                     recyclerView.setAdapter(adapter);
                 }
                 else{
                     foundNews.clear();
-                    NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, foundNews);
+                    NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, foundNews, 0);
                     recyclerView.setAdapter(adapter);
                 }
                 return true;
@@ -294,7 +294,7 @@ public class MainActivity extends AppCompatActivity
         checkRecyclerViewCondition();
         List<News> liked = new ArrayList<News>(DBManager.getInstance(this).getLikedNews().values());
         newsList.addAll(liked);
-        recyclerView.setAdapter(new NewsRecyclerViewAdapter(this, newsList));
+        recyclerView.setAdapter(new NewsRecyclerViewAdapter(this, newsList, 1));
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
