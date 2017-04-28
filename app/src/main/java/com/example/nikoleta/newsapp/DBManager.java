@@ -4,19 +4,16 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.Toast;
 
-import com.example.nikoleta.newsapp.adapters.NewsRecyclerViewAdapter;
 import com.example.nikoleta.newsapp.model.News;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class DBManager extends SQLiteOpenHelper{
@@ -70,16 +67,16 @@ public class DBManager extends SQLiteOpenHelper{
     private static void loadNews() {
         Cursor cursor = ourInstance.getWritableDatabase().rawQuery("SELECT id, title, author, text,date,link,image FROM liked", null);
         while (cursor.moveToNext()){
-            int id = cursor.getInt(cursor.getColumnIndex("id"));
             String title = cursor.getString(cursor.getColumnIndex("title"));
             String author = cursor.getString(cursor.getColumnIndex("author"));
             String text = cursor.getString(cursor.getColumnIndex("text"));
             String date = cursor.getString(cursor.getColumnIndex("date"));
             String link = cursor.getString(cursor.getColumnIndex("link"));
+
+            // get image
             byte[] blob = cursor.getBlob(cursor.getColumnIndex("image"));
-            // Convert the byte array to Bitmap
-            Bitmap image = null;
-            if(blob!=null) {
+            Bitmap image = null; // convert the byte array to Bitmap
+            if(blob != null) {
                 image = BitmapFactory.decodeByteArray(blob, 0, blob.length);
             }
 

@@ -1,8 +1,6 @@
 package com.example.nikoleta.newsapp.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class NewsManager {
@@ -26,8 +24,7 @@ public class NewsManager {
             categoryNewsList.add(news);
         }
     }
-
-
+    
     private NewsManager() {
     }
 }
