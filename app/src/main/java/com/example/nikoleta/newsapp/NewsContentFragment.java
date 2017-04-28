@@ -27,15 +27,15 @@ public class NewsContentFragment extends Fragment {
         void closeNewsContentFragment();
     }
 
-    ImageView image;
-    TextView title;
-    TextView text;
-    TextView author;
-    TextView date;
-    TextView original;
-    RecyclerView recyclerView;
-    ImageButton backToMainPageButton;
-    List<News> list=new ArrayList<>();
+    private ImageView image;
+    private TextView title;
+    private TextView text;
+    private TextView date;
+    private TextView original;
+    private RecyclerView recyclerView;
+    private ImageButton backToMainPageButton;
+    private ImageButton like;
+    private List<News> list=new ArrayList<>();
 
     public NewsContentFragment() {
 
@@ -71,17 +71,27 @@ public class NewsContentFragment extends Fragment {
         backToMainPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CommunicatorNewsContentFragment comunicator=
+                CommunicatorNewsContentFragment communicator=
                         (CommunicatorNewsContentFragment) getActivity();
 
-                comunicator.closeNewsContentFragment();
+                communicator.closeNewsContentFragment();
             }
         });
 
-        view.findViewById(R.id.like_button_news_content_fragment).setOnClickListener(new View.OnClickListener() {
+        like = (ImageButton) view.findViewById(R.id.like_button_news_content_fragment);
+        final News n = list.get(getArguments().getInt("position"));
+        if(DBManager.getInstance(getContext()).getLikedNews().containsKey(n.getTitle())){
+            like.setImageResource(R.mipmap.ic_like_red);
+        }
+        like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                News n = list.get(getArguments().getInt("position"));
+                if(DBManager.getInstance(getContext()).getLikedNews().containsKey(n.getTitle())){
+                    like.setImageResource(R.mipmap.ic_like_white);
+                }
+                else{
+                    like.setImageResource(R.mipmap.ic_like_red);
+                }
                 DBManager.getInstance(getContext()).addNews(n);
             }
         });
@@ -96,8 +106,6 @@ public class NewsContentFragment extends Fragment {
             }
         });
 
-        final News n = list.get(getArguments().getInt("position"));
-        //Toast.makeText(getContext(), n.getTitle() + "" , Toast.LENGTH_SHORT).show();
         image.setImageBitmap(n.getBitmapIMG());
         title.setText(n.getTitle());
         text.setText(n.getText());
@@ -119,5 +127,6 @@ public class NewsContentFragment extends Fragment {
 
         return view;
     }
+
 
 }

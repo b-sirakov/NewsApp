@@ -129,10 +129,16 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         readMore(holder.image, position);
 
 
-
+        setLikeButtonColor(holder, position);
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(DBManager.getInstance(context).getLikedNews().containsKey(news.get(position).getTitle())){
+                    holder.like.setImageResource(R.mipmap.ic_like_purple);
+                }
+                else{
+                    holder.like.setImageResource(R.mipmap.ic_like_red);
+                }
                 String title = MainActivity.newsList.get(position).getTitle();
                 String author =MainActivity.newsList.get(position).getAuthor();
                 String text = MainActivity.newsList.get(position).getText();
@@ -205,5 +211,13 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 }
             }
         });
+    }
+    private void setLikeButtonColor(NewsViewHolder holder, int position){
+        if(!DBManager.getInstance(context).getLikedNews().containsKey(news.get(position).getTitle())){
+            holder.like.setImageResource(R.mipmap.ic_like_purple);
+        }
+        else{
+            holder.like.setImageResource(R.mipmap.ic_like_red);
+        }
     }
 }
