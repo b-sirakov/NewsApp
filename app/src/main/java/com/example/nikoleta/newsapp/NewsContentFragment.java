@@ -42,20 +42,20 @@ public class NewsContentFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         if(getActivity()==null){
             Log.d("OMG","VLIZA");
         }
         if(getActivity().getSupportFragmentManager().findFragmentByTag("NewsFragment")!=null){
-            list= NewsManager.getInstance().getCategoryNewsList();
+            list= NewsManager.getInstance(getContext()).getSelected();
 
         }else {
             if(!MainActivity.foundNews.isEmpty()){
                 list=MainActivity.foundNews;
             }else {
-                list = MainActivity.newsList;
+                list = NewsManager.getInstance(getContext()).getSelected();
             }
         }
 
@@ -80,7 +80,7 @@ public class NewsContentFragment extends Fragment {
 
         like = (ImageButton) view.findViewById(R.id.like_button_news_content_fragment);
         final News n = list.get(getArguments().getInt("position"));
-        if(DBManager.getInstance(getContext()).getLikedNews().containsKey(n.getTitle())){
+        if(NewsManager.getInstance(getContext()).existsInLiked(n)){
             like.setImageResource(R.mipmap.ic_like_red);
         }
         like.setOnClickListener(new View.OnClickListener() {
@@ -88,11 +88,12 @@ public class NewsContentFragment extends Fragment {
             public void onClick(View v) {
                 if(DBManager.getInstance(getContext()).getLikedNews().containsKey(n.getTitle())){
                     like.setImageResource(R.mipmap.ic_like_white);
+                    NewsManager.getInstance(getContext()).removeNews(n, 2);
                 }
                 else{
                     like.setImageResource(R.mipmap.ic_like_red);
+                    NewsManager.getInstance(getContext()).addNews(n, 2);
                 }
-                DBManager.getInstance(getContext()).addNews(n);
             }
         });
 
@@ -109,7 +110,6 @@ public class NewsContentFragment extends Fragment {
         image.setImageBitmap(n.getBitmapIMG());
         title.setText(n.getTitle());
         text.setText(n.getText());
-        //author.setText(n.getAuthor());
 
         date.setText(n.getDate().substring(0,10) + " | ");
         original.setOnClickListener(new View.OnClickListener() {

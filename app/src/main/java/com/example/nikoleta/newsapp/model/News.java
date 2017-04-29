@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 import java.io.Serializable;
 
-public class News implements Serializable {
+public class News implements Serializable, Cloneable {
 
 
     private int id;

@@ -24,12 +24,21 @@ import android.widget.Toast;
 
 import com.example.nikoleta.newsapp.adapters.NewsRecyclerViewAdapter;
 import com.example.nikoleta.newsapp.model.News;
+import com.example.nikoleta.newsapp.model.NewsManager;
 import com.example.nikoleta.newsapp.string_holders.StringHolder;
-import com.example.nikoleta.newsapp.tasks.DownloadAndParseTask;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,10 +48,7 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private static CustomLayoutManager clm;
     private ProgressBar progBar;
-    private ProgressBar progBar2;
-    private static StringBuilder jsonText;
-    public static  ArrayList<News> newsList;
-    public static List<News> foundNews=new ArrayList<>();
+    public static ArrayList<News> foundNews = new ArrayList<>();
     private StringHolder stringHolder;
     private MaterialSearchView searchView;
     private TextView titleSection;
@@ -54,19 +60,17 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("NewsApp");
 
-        searchView= (MaterialSearchView) findViewById(R.id.search_view_main);
-        recyclerView= (RecyclerView) findViewById(R.id.recycler_view_main_activity);
-        progBar= (ProgressBar) findViewById(R.id.progress_bar);
-        progBar2= (ProgressBar) findViewById(R.id.progress_bar2);
-        clm=new CustomLayoutManager(this);
-        stringHolder=new StringHolder();
-        newsList = new ArrayList<>();
-        NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(this, newsList, 0);
+        searchView = (MaterialSearchView) findViewById(R.id.search_view_main);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_main_activity);
+        progBar = (ProgressBar) findViewById(R.id.progress_bar);
+        progBar.setVisibility(View.VISIBLE);
+        clm = new CustomLayoutManager(this);
+        stringHolder = new StringHolder();
+        NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(this, NewsManager.getInstance(MainActivity.this).getSelected(), 0);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(clm);
-        getSupportActionBar().setTitle("NewsApp");
-        jsonText=new StringBuilder("");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -77,8 +81,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        setCategoriesURLforCNN();
-        setCategoriesURLforBBC();
+        setCategoriesURLForCNN();
+        setCategoriesURLForBBC();
         stringHolder.setSection("BBC");
         ((TextView)findViewById(R.id.section_title_tv)).setText(stringHolder.getSection());
         callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
@@ -87,7 +91,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-
         FragmentManager fm=getSupportFragmentManager();
         if((fm.findFragmentByTag("ContentFragment"))!=null){
             closeNewsContentFragment();
@@ -122,7 +125,7 @@ public class MainActivity extends AppCompatActivity
             public void onSearchViewClosed() {
                 foundNews.clear();
                 //If closed Search View , recycle view will be empty
-                NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, newsList, 0);
+                NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, NewsManager.getInstance(MainActivity.this).getSelected(), 0);
                 recyclerView.setAdapter(adapter);
             }
         });
@@ -140,7 +143,7 @@ public class MainActivity extends AppCompatActivity
 
                     foundNews.clear();
 
-                    for(News news:MainActivity.newsList){
+                    for(News news : NewsManager.getInstance(MainActivity.this).getSelected()){
                         if(news.getTitle().toLowerCase().contains(newText.toLowerCase())){
                             foundNews.add(news);
                         }
@@ -179,7 +182,7 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    public void setCategoriesURLforBBC(){
+    public void setCategoriesURLForBBC(){
         //set the URLs for each categort for BBC
         stringHolder.setBusinessURL(
                 "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
@@ -202,7 +205,7 @@ public class MainActivity extends AppCompatActivity
                         "format=json&q=technology%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
         );
     }
-    public void setCategoriesURLforCNN(){
+    public void setCategoriesURLForCNN(){
         //set the URLs for each categort for CNN
         stringHolder.setBusinessURL(
                         "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
@@ -230,16 +233,16 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        titleSection= (TextView) findViewById(R.id.section_title_tv);
+        titleSection = (TextView) findViewById(R.id.section_title_tv);
 
         switch (id){
             case R.id.cnn_news:
-                setCategoriesURLforCNN();
+                setCategoriesURLForCNN();
                 fillData("CNN News", "CNN", "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                         "format=json&q=language%3A(english)%20site%3Acnn.com%20performance_score%3A%3E2%20(site_type%3Anews)");
                 break;
             case R.id.bbc_news:
-                setCategoriesURLforBBC();
+                setCategoriesURLForBBC();
                 fillData("BBC News", "BBC", "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
                         "format=json&q=language%3A(english)%20site%3Abbc.co.uk%20performance_score%3A%3E2%20(site_type%3Anews)");
                 break;
@@ -276,31 +279,42 @@ public class MainActivity extends AppCompatActivity
         titleSection.setText(stringHolder.getSection());
         callAsyncTask(url);
     }
-    public void checkRecyclerViewCondition(){
-        // used in callAsyncTask method
-        if (!newsList.isEmpty()) {
-            newsList.clear();
-            recyclerView.getAdapter().notifyDataSetChanged();
-        }
-    }
-    public void callAsyncTask(String url){
-        checkRecyclerViewCondition();
-        new DownloadAndParseTask(this).execute(url);
-    }
     public void fillLikedNewsData(){
         Toast.makeText(this, "Liked News", Toast.LENGTH_SHORT).show();
         stringHolder.setSection("Liked news");
         titleSection.setText(stringHolder.getSection());
         checkRecyclerViewCondition();
-        List<News> liked = new ArrayList<News>(DBManager.getInstance(this).getLikedNews().values());
-        newsList.addAll(liked);
-        recyclerView.setAdapter(new NewsRecyclerViewAdapter(this, newsList, 1));
+        NewsManager.getInstance(MainActivity.this).addAllNews(NewsManager.getInstance(MainActivity.this).getLiked());
+        // TODO cloned collection ??
+        // if collection is not cloned -> UnsupportedOperationException
+        // (unmodifiable list is given to remove() method in NewsRecyclerViewAdapter (when you click on delete)
+        ArrayList<News> cloned = new ArrayList<>();
+        for(News n : NewsManager.getInstance(MainActivity.this).getLiked()){
+            try {
+                clone();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+            cloned.add(n);
+        }
+        recyclerView.setAdapter(new NewsRecyclerViewAdapter(this, cloned, 1));
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+    }
+    public void checkRecyclerViewCondition(){
+        // used in callAsyncTask method
+        if (!NewsManager.getInstance(MainActivity.this).getSelected().isEmpty()) {
+            NewsManager.getInstance(MainActivity.this).update(1);
+            recyclerView.getAdapter().notifyDataSetChanged();
+        }
+    }
+    public void callAsyncTask(String url){
+        checkRecyclerViewCondition();
+        new DownloadAndParseTask(MainActivity.this).execute(url);
     }
 
     @Override
     public void closeNewsContentFragment() {
-        FragmentManager fm=getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         android.support.v4.app.Fragment frag = fm.findFragmentByTag("ContentFragment");
         getSupportFragmentManager().beginTransaction().remove(frag).commit();
 
@@ -313,71 +327,18 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public class DownloadSmallAmountOfImages extends AsyncTask<Integer,Void,Void>{
-
-        private Context context;
-        private List<News> listNews;
-        private ProgressBar progBar;
-        private MainActivity.CustomLayoutManager clm;
-
-        public DownloadSmallAmountOfImages(Context context,List<News> listNews) {
-            this.context = context;
-            progBar=MainActivity.this.getProgBar2();
-            this.listNews=listNews;
-            clm=MainActivity.getClm();
-        }
-
-        @Override
-        protected void onPreExecute() {
-                clm.setScrollEnabled(false);
-                progBar.setVisibility(View.VISIBLE);
-            recyclerView.stopScroll();
-
-        }
-
-        @Override
-        protected Void doInBackground(Integer... params) {
-            int position=params[0];
-            String url = "";
-            InputStream in=null;
-
-            for(int i=position;i<=position+5;i++){
-                Bitmap bitmap = null;
-
-                if(i>=this.listNews.size()){
-                    return null;
-                }
-                Log.d("Count","Kartinki-"+i);
-                url=this.listNews.get(i).getImageURL();
-                try {
-                    in = new java.net.URL(url).openStream();
-                    bitmap = BitmapFactory.decodeStream(in);
-                } catch (Exception e) {
-                    Log.e("Error", ""+i);
-                    e.printStackTrace();
-                }
-                if(bitmap!=null) {
-                    this.listNews.get(i).setBitmapIMG(Bitmap.createScaledBitmap(bitmap, 360, 360, true));
-                }
-            }
-            try {
-                if(in!=null) {
-                    in.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-                progBar.setVisibility(View.GONE);
-
-                clm.setScrollEnabled(true);
-        }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        recyclerView.setVisibility(View.VISIBLE);
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        recyclerView.setVisibility(View.GONE);
     }
 
+    // CustomLayoutManager
     public static class CustomLayoutManager extends LinearLayoutManager {
         private boolean isScrollEnabled = true;
 
@@ -391,7 +352,6 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public boolean canScrollVertically() {
-            //Similarly you can customize "canScrollHorizontally()" for managing horizontal scroll
             return isScrollEnabled && super.canScrollVertically();
         }
 
@@ -400,24 +360,207 @@ public class MainActivity extends AppCompatActivity
             return super.canScrollHorizontally();
         }
     }
-
-    public RecyclerView getRecyclerView() {
-        return recyclerView;
-    }
-
     public static CustomLayoutManager getClm() {
         return clm;
     }
 
-    public ProgressBar getProgBar() {
-        return progBar;
+    // AsyncTasks
+    public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
+        private Context context;
+        private StringBuilder jsonText;
+        private MainActivity.CustomLayoutManager clm;
+        private List<News> taskNewsList;
+
+        public DownloadAndParseTask(Context context)  {
+            this.context = context;
+            this.jsonText = new StringBuilder("");
+            this.taskNewsList = NewsManager.getInstance(MainActivity.this).getSelected();
+            clm = MainActivity.getClm();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+            try {
+                URL url = new URL(params[0]);
+
+                HttpURLConnection connection= (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(
+                        connection.getInputStream()));
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) {
+                    jsonText.append(inputLine);
+                }
+                in.close();
+
+                connection.disconnect();
+
+                JSONObject jsonObject = new JSONObject(jsonText.toString());
+
+                JSONArray posts = jsonObject.getJSONArray("posts");
+
+                ArrayList<String> titles = new ArrayList<String>();
+
+                for(int i = 0; i < posts.length(); i++){
+                    JSONObject post = posts.getJSONObject(i);
+
+                    boolean isThisTitleRepeated = false;
+
+                    for(int a=0;a<titles.size();a++) {
+                        String currentTitle = post.getString("title");
+                        if(currentTitle.isEmpty()||currentTitle == null){
+                            continue;
+                        }
+                        String[] titleByWords = titles.get(a).split(" ");
+                        String[] currentTitleByWords = post.getString("title").split(" ");
+
+                        if(!titles.get(a).isEmpty()&&titleByWords[0].equals(currentTitleByWords[0]) && titleByWords[1].equals(currentTitleByWords[1])
+                                &&titleByWords[2].equals(currentTitleByWords[2])){
+                            isThisTitleRepeated = true;
+                        }
+
+                        if (titles.get(a).contains(post.getString("title")) && !titles.get(a).isEmpty()) {
+                            isThisTitleRepeated = true;
+                        }
+                    }
+                    if(isThisTitleRepeated){
+                        continue;
+                    }
+
+                    String title = post.getString("title");
+                    String desc = post.getString("text");
+                    String urlImage = post.getJSONObject("thread").getString("main_image");
+                    String author = post.getJSONObject("thread").getString("site");
+                    String date = post.getJSONObject("thread").getString("published");
+                    String original = post.getJSONObject("thread").getString("url");
+                    titles.add(title);
+
+                    News news = new News(title,author,desc,urlImage,date,original);
+                    NewsManager.getInstance(MainActivity.this).addNews(news, 1);
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            DownloadImageTask downloadImageTask = new DownloadImageTask();
+            downloadImageTask.execute();
+
+        }
+
+        private class DownloadImageTask extends AsyncTask<Void, Void, Void> {
+
+            protected Void doInBackground(Void... urls) {
+                String url = "";
+                InputStream in=null;
+
+                for(int i = 0; i < 5; i++){
+                    Bitmap bitmap = null;
+
+                    if(i >= taskNewsList.size()){
+                        return null;
+                    }
+                    url = taskNewsList.get(i).getImageURL();
+                    try {
+                        in = new java.net.URL(url).openStream();
+                        bitmap = BitmapFactory.decodeStream(in);
+                    } catch (Exception e) {
+                        Log.e("Error", ""+i);
+                        e.printStackTrace();
+                    }
+                    if(bitmap!=null) {
+                        taskNewsList.get(i).setBitmapIMG(Bitmap.createScaledBitmap(bitmap, 360, 360, true));
+                    }
+                }
+                try {
+                    if(in!=null) {
+                        in.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+            protected void onPostExecute(Void avoid) {
+                NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, taskNewsList, 0);
+                progBar.setVisibility(View.GONE);
+                recyclerView.setAdapter(adapter);
+                recyclerView.setLayoutManager(clm);
+            }
+        }
+
+    }
+    public class DownloadSmallAmountOfImages extends AsyncTask<Integer,Void,Void>{
+
+        private Context context;
+        private List<News> listNews;
+
+        public DownloadSmallAmountOfImages(Context context,List<News> listNews) {
+            this.context = context;
+            this.listNews = listNews;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            clm.setScrollEnabled(false);
+            progBar.setVisibility(View.VISIBLE);
+            recyclerView.stopScroll();
+        }
+
+        @Override
+        protected Void doInBackground(Integer... params) {
+            int position = params[0];
+            String url = "";
+            InputStream in = null;
+
+            for(int i = position; i <= position+5; i++){
+                Bitmap bitmap = null;
+
+                if(i >= this.listNews.size()){
+                    return null;
+                }
+                url = this.listNews.get(i).getImageURL();
+                try {
+                    in = new java.net.URL(url).openStream();
+                    bitmap = BitmapFactory.decodeStream(in);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if(bitmap != null) {
+                    this.listNews.get(i).setBitmapIMG(Bitmap.createScaledBitmap(bitmap, 360, 360, true));
+                }
+            }
+            try {
+                if(in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            progBar.setVisibility(View.GONE);
+            clm.setScrollEnabled(true);
+        }
     }
 
-    public static StringBuilder getJsonText() {
-        return jsonText;
-    }
-
-    public ProgressBar getProgBar2() {
-        return progBar2;
-    }
 }

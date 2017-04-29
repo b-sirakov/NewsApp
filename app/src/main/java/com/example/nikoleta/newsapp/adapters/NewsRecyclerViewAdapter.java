@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import com.example.nikoleta.newsapp.MainActivity;
 import com.example.nikoleta.newsapp.NewsContentFragment;
 import com.example.nikoleta.newsapp.R;
 import com.example.nikoleta.newsapp.model.News;
+import com.example.nikoleta.newsapp.model.NewsManager;
 import com.example.nikoleta.newsapp.tasks.ExtractOrigLinkAndShareTask;
 
 import java.util.ArrayList;
@@ -30,13 +30,14 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
     private int code;
     private int counter;
     private Context context;
-    private List<News> news = new ArrayList<News>();
-    private List<Integer> expandedPositions =new ArrayList<Integer>();
+    private List<News> news = new ArrayList<>();
+    private List<Integer> expandedPositions = new ArrayList<>();
 
     public NewsRecyclerViewAdapter(Context context, List news, int code){
         counter=0;
         this.context = context;
         this.news = news;
+        // (code == 0) ? no delete option : delete option
         this.code = code;
     }
 
@@ -83,8 +84,6 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
             if (position >= 0 && position % 5 == 0) {
 
                 if (counter < position) {
-//                    Log.d("Count","Vliza-POSITION"+position);
-//                    Log.d("Count","Vliza-COUNTER"+counter);
                     counter += 5;
 
                     if(( (AppCompatActivity) context).getSupportFragmentManager().findFragmentByTag("NewsFragment")!=null){
@@ -92,13 +91,11 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                     }
                     MainActivity ma = (MainActivity) context;
                     MainActivity.getClm().setScrollEnabled(false);
-                    MainActivity.DownloadSmallAmountOfImages downloadTask = ma.new DownloadSmallAmountOfImages(context,this.news);
+                    MainActivity.DownloadSmallAmountOfImages downloadTask = ma.new DownloadSmallAmountOfImages(context, this.news);
                     downloadTask.execute(counter);
                 }
             }
         }
-        //Log.d("Count",""+MainActivity.getClm().canScrollVertically());
-        Log.d("Count",""+position);
 
         holder.title.setText(current.getTitle());
         readMore(holder.title, position);
@@ -135,18 +132,12 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
             public void onClick(View v) {
                 if(DBManager.getInstance(context).getLikedNews().containsKey(news.get(position).getTitle())){
                     holder.like.setImageResource(R.mipmap.ic_like_purple);
+                    deleteItem(position);
                 }
                 else{
                     holder.like.setImageResource(R.mipmap.ic_like_red);
+                    addItem(position);
                 }
-                String title = MainActivity.newsList.get(position).getTitle();
-                String author =MainActivity.newsList.get(position).getAuthor();
-                String text = MainActivity.newsList.get(position).getText();
-                String data=MainActivity.newsList.get(position).getDate();
-                String link=MainActivity.newsList.get(position).getOriginalArticleURL();
-                Bitmap image = MainActivity.newsList.get(position).getBitmapIMG();
-                News current = new News(title, author, text,image,data,link);
-                DBManager.getInstance(context).addNews(current);
             }
         });
 
@@ -171,14 +162,12 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 }
             }
         });
+
         if(code == 1) {
             holder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DBManager.getInstance(context).removeNews(current);
-                    news.remove(position);
-                    notifyItemRemoved(position);
-                    notifyItemRangeChanged(position, news.size());
+                    deleteItem(position);
                 }
             });
         }else {
@@ -194,9 +183,6 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(context instanceof MainActivity) {
-                    ((MainActivity) context).getRecyclerView().setVisibility(View.GONE);
-                }
                 NewsContentFragment fragment = new NewsContentFragment();
                 Bundle bundle = new Bundle();
                 bundle.putInt("position", position);
@@ -219,5 +205,21 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         else{
             holder.like.setImageResource(R.mipmap.ic_like_red);
         }
+    }
+    private void deleteItem(int position){
+        NewsManager.getInstance(context).removeNews(news.get(position), 2);
+        news.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, news.size());
+    }
+    private void addItem(int position){
+        String title = NewsManager.getInstance(context).getSelected().get(position).getTitle();
+        String author = NewsManager.getInstance(context).getSelected().get(position).getAuthor();
+        String text = NewsManager.getInstance(context).getSelected().get(position).getText();
+        String data = NewsManager.getInstance(context).getSelected().get(position).getDate();
+        String link = NewsManager.getInstance(context).getSelected().get(position).getOriginalArticleURL();
+        Bitmap image = NewsManager.getInstance(context).getSelected().get(position).getBitmapIMG();
+        News current = new News(title, author, text,image,data,link);
+        NewsManager.getInstance(context).addNews(current, 2);
     }
 }
