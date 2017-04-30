@@ -64,26 +64,17 @@ public class NewsContentFragment extends Fragment {
 
         code = getArguments().getInt("code");
         if(code == 1) {
-            if (getActivity().getSupportFragmentManager().findFragmentByTag("NewsFragment") != null) {
-                list = NewsManager.getInstance(getContext()).getSelected();
-
-            } else {
                 if (!MainActivity.foundNews.isEmpty()) {
                     list = MainActivity.foundNews;
                 } else {
                     list = NewsManager.getInstance(getContext()).getSelected();
                 }
-            }
         }else {
-            if (getActivity().getSupportFragmentManager().findFragmentByTag("NewsFragment") != null) {
-                list = NewsManager.getInstance(getContext()).getRelated();
-            }else {
                 if (!MainActivity.foundNews.isEmpty()) {
                     list = MainActivity.foundNews;
                 } else {
                     list = NewsManager.getInstance(getContext()).getRelated();
                 }
-            }
         }
 
         View view = inflater.inflate(R.layout.fragment_news_content, container, false);
@@ -317,12 +308,13 @@ public class NewsContentFragment extends Fragment {
         String first = firstTwoWords[0];
         String second = firstTwoWords[1];
         if(getArguments().get("author").equals("cnn.com")) {
-            new DownloadAndParseTask(getContext()).execute("http://webhose.io/search?token=48ea2974-f86c-4b77-a968-1c9d64845502&" +
-                    "format=json&q=" + first + "%20" + second + "%20language%3A(english)%20site%3Acnn.com");
+
+            new DownloadAndParseTask(getContext()).execute("http://webhose.io/search?token="+getResources().getString(R.string.api_key) +
+                    "&format=json&q=" + first + "%20" + second + "%20language%3A(english)%20site%3Acnn.com");
         }
         else{
-            new DownloadAndParseTask(getContext()).execute("http://webhose.io/search?token=48ea2974-f86c-4b77-a968-1c9d64845502&" +
-                    "format=json&q=" + first + "%20" + second + "%20language%3A(english)%20site%3Abbc.co.uk");
+            new DownloadAndParseTask(getContext()).execute("http://webhose.io/search?token="+getResources().getString(R.string.api_key) +
+                    "&format=json&q=" + first + "%20" + second + "%20language%3A(english)%20site%3Abbc.co.uk");
         }
     }
 

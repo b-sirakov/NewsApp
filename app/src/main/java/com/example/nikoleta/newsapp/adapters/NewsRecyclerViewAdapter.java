@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,11 +81,14 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
     @Override
     public void onBindViewHolder(final NewsRecyclerViewAdapter.NewsViewHolder holder, final int position) {
         final News current = this.news.get(position);
+
+
+
         if(context instanceof MainActivity) {
             if (position >= 0 && position % 5 == 0) {
 
-                if (counter < position) {
-                    counter += 5;
+                if (counter <= position) {
+                    Log.d("TESTA",position+"");
 
                     if(( (AppCompatActivity) context).getSupportFragmentManager().findFragmentByTag("NewsFragment")!=null){
 
@@ -93,6 +97,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                     MainActivity.getClm().setScrollEnabled(false);
                     MainActivity.DownloadSmallAmountOfImages downloadTask = ma.new DownloadSmallAmountOfImages(context, this.news);
                     downloadTask.execute(counter);
+                    counter += 5;
                 }
             }
         }

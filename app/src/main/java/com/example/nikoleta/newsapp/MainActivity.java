@@ -85,8 +85,8 @@ public class MainActivity extends AppCompatActivity
         setCategoriesURLForBBC();
         stringHolder.setSection("BBC");
         ((TextView)findViewById(R.id.section_title_tv)).setText(stringHolder.getSection());
-        callAsyncTask("http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                "format=json&q=language%3A(english)%20site%3Abbc.co.uk%20performance_score%3A%3E2%20(site_type%3Anews)");
+        callAsyncTask("http://webhose.io/search?token="+getString(R.string.api_key) +
+                "&format=json&q=language%3A(english)%20site%3Abbc.co.uk%20performance_score%3A%3E2%20(site_type%3Anews)");
     }
 
     @Override
@@ -182,46 +182,46 @@ public class MainActivity extends AppCompatActivity
     public void setCategoriesURLForBBC(){
         //set the URLs for each categort for BBC
         stringHolder.setBusinessURL(
-                "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                        "format=json&q=economy%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
+                "http://webhose.io/search?token="+getString(R.string.api_key) +
+                        "&format=json&q=economy%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
         );
         stringHolder.setHealthURL(
-                "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                        "format=json&q=health%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
+                "http://webhose.io/search?token="+getString(R.string.api_key) +
+                        "&format=json&q=health%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
         );
         stringHolder.setPoliticsURL(
-                "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                        "format=json&q=politics%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
+                "http://webhose.io/search?token="+getString(R.string.api_key) +
+                        "&format=json&q=politics%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
         );
         stringHolder.setSportsURL(
-                "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                        "format=json&q=sport%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
+                "http://webhose.io/search?token="+getString(R.string.api_key)+
+                        "&format=json&q=sport%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
         );
         stringHolder.setTechnologiesURL(
-                "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                        "format=json&q=technology%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
+                "http://webhose.io/search?token="+getString(R.string.api_key) +
+                        "&format=json&q=technology%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
         );
     }
     public void setCategoriesURLForCNN(){
         //set the URLs for each categort for CNN
         stringHolder.setBusinessURL(
-                        "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                        "format=json&q=business%20site%3Acnn.com"
+                        "http://webhose.io/search?token="+getString(R.string.api_key) +
+                                "&format=json&q=business%20site%3Acnn.com"
         );
         stringHolder.setHealthURL(
-                "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                        "format=json&q=health%20site%3Acnn.com%20(site_type%3Anews)"
+                "http://webhose.io/search?token="+getString(R.string.api_key) +
+                        "&format=json&q=health%20site%3Acnn.com%20(site_type%3Anews)"
         );
         stringHolder.setPoliticsURL(
-                                           "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                        "format=json&q=politics%20site%3Acnn.com%20(site_type%3Anews)");
+                       "http://webhose.io/search?token="+getString(R.string.api_key) +
+                               "&format=json&q=politics%20site%3Acnn.com%20(site_type%3Anews)");
         stringHolder.setSportsURL(
-                                            "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                        "format=json&q=sport%20site%3Acnn.com%20(site_type%3Anews)"
+                           "http://webhose.io/search?token="+getString(R.string.api_key) +
+                                   "&format=json&q=sport%20site%3Acnn.com%20(site_type%3Anews)"
         );
         stringHolder.setTechnologiesURL(
-                                           "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                        "format=json&q=technology%20site%3Acnn.com%20(site_type%3Anews)"
+                         "http://webhose.io/search?token="+getString(R.string.api_key) +
+                                 "&format=json&q=technology%20site%3Acnn.com%20(site_type%3Anews)"
         );
     }
 
@@ -235,13 +235,13 @@ public class MainActivity extends AppCompatActivity
         switch (id){
             case R.id.cnn_news:
                 setCategoriesURLForCNN();
-                fillData("CNN News", "CNN", "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                        "format=json&q=language%3A(english)%20site%3Acnn.com%20performance_score%3A%3E2%20(site_type%3Anews)");
+                fillData("CNN News", "CNN", "http://webhose.io/search?token="+getString(R.string.api_key) +
+                        "&format=json&q=language%3A(english)%20site%3Acnn.com%20performance_score%3A%3E2%20(site_type%3Anews)");
                 break;
             case R.id.bbc_news:
                 setCategoriesURLForBBC();
-                fillData("BBC News", "BBC", "http://webhose.io/search?token=e615070d-99c6-4d8f-a83b-b26dc590cd8b&" +
-                        "format=json&q=language%3A(english)%20site%3Abbc.co.uk%20performance_score%3A%3E2%20(site_type%3Anews)");
+                fillData("BBC News", "BBC", "http://webhose.io/search?token="+getString(R.string.api_key) +
+                        "&format=json&q=language%3A(english)%20site%3Abbc.co.uk%20performance_score%3A%3E2%20(site_type%3Anews)");
                 break;
             case R.id.business_category:
                 fillData("Business category selected", "Business", stringHolder.getBusinessURL());
@@ -434,6 +434,8 @@ public class MainActivity extends AppCompatActivity
                     String title = post.getString("title");
                     String desc = post.getString("text");
                     String urlImage = post.getJSONObject("thread").getString("main_image");
+                    Log.d("KARTINA_URL",title);
+                    Log.d("KARTINA_URL",urlImage);
                     String author = post.getJSONObject("thread").getString("site");
                     String date = post.getJSONObject("thread").getString("published");
                     String original = post.getJSONObject("thread").getString("url");
@@ -454,53 +456,57 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            DownloadImageTask downloadImageTask = new DownloadImageTask();
-            downloadImageTask.execute();
-
-        }
-
-        private class DownloadImageTask extends AsyncTask<Void, Void, Void> {
-
-            protected Void doInBackground(Void... urls) {
-                String url = "";
-                InputStream in=null;
-
-                for(int i = 0; i < 5; i++){
-                    Bitmap bitmap = null;
-
-                    if(i >= taskNewsList.size()){
-                        return null;
-                    }
-                    url = taskNewsList.get(i).getImageURL();
-                    try {
-                        in = new java.net.URL(url).openStream();
-                        bitmap = BitmapFactory.decodeStream(in);
-                    } catch (Exception e) {
-                        Log.e("Error", ""+i);
-                        e.printStackTrace();
-                    }
-                    if(bitmap!=null) {
-                        taskNewsList.get(i).setBitmapIMG(Bitmap.createScaledBitmap(bitmap, 360, 360, true));
-                    }
-                }
-                try {
-                    if(in!=null) {
-                        in.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                return null;
-            }
-
-            protected void onPostExecute(Void avoid) {
+            //DownloadImageTask downloadImageTask = new DownloadImageTask();
+            //downloadImageTask.execute();
                 NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, taskNewsList, 0);
                 progBar.setVisibility(View.GONE);
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(clm);
-            }
+
         }
+
+//        private class DownloadImageTask extends AsyncTask<Void, Void, Void> {
+//
+//            protected Void doInBackground(Void... urls) {
+//                String url = "";
+//                InputStream in=null;
+//
+//                for(int i = 0; i < 5; i++){
+//                    Bitmap bitmap = null;
+//
+//                    if(i >= taskNewsList.size()){
+//                        return null;
+//                    }
+//                    url = taskNewsList.get(i).getImageURL();
+//                    try {
+//                        in = new java.net.URL(url).openStream();
+//                        bitmap = BitmapFactory.decodeStream(in);
+//                    } catch (Exception e) {
+//                        Log.e("Error", ""+i);
+//                        e.printStackTrace();
+//                    }
+//                    if(bitmap!=null) {
+//                        taskNewsList.get(i).setBitmapIMG(Bitmap.createScaledBitmap(bitmap, 360, 360, true));
+//                    }
+//                }
+//                try {
+//                    if(in!=null) {
+//                        in.close();
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                return null;
+//            }
+//
+//            protected void onPostExecute(Void avoid) {
+//                NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, taskNewsList, 0);
+//                progBar.setVisibility(View.GONE);
+//                recyclerView.setAdapter(adapter);
+//                recyclerView.setLayoutManager(clm);
+//            }
+//        }
 
     }
     public class DownloadSmallAmountOfImages extends AsyncTask<Integer,Void,Void>{
@@ -532,6 +538,12 @@ public class MainActivity extends AppCompatActivity
                 if(i >= this.listNews.size()){
                     return null;
                 }
+
+                if(this.listNews.get(i).getBitmapIMG()!=null){
+                    continue;
+                }
+
+
                 url = this.listNews.get(i).getImageURL();
                 try {
                     in = new java.net.URL(url).openStream();
@@ -555,6 +567,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            recyclerView.getAdapter().notifyDataSetChanged();
             progBar.setVisibility(View.GONE);
             clm.setScrollEnabled(true);
         }
