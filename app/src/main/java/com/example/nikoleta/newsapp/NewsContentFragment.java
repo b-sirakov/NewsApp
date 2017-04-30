@@ -52,25 +52,37 @@ public class NewsContentFragment extends Fragment {
     private RecyclerView recyclerView;
     private ImageButton backToMainPageButton;
     private ImageButton like;
-    private List<News> list=new ArrayList<>();
+    private List<News> list = new ArrayList<>();
+    int code;
 
-    public NewsContentFragment() {
-
-    }
+    public NewsContentFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
 
-        if(getActivity().getSupportFragmentManager().findFragmentByTag("NewsFragment")!= null){
-            list = NewsManager.getInstance(getContext()).getSelected();
-
-        }else {
-            if(!MainActivity.foundNews.isEmpty()){
-                list=MainActivity.foundNews;
-            }else {
+        code = getArguments().getInt("code");
+        if(code == 1) {
+            if (getActivity().getSupportFragmentManager().findFragmentByTag("NewsFragment") != null) {
                 list = NewsManager.getInstance(getContext()).getSelected();
+
+            } else {
+                if (!MainActivity.foundNews.isEmpty()) {
+                    list = MainActivity.foundNews;
+                } else {
+                    list = NewsManager.getInstance(getContext()).getSelected();
+                }
+            }
+        }else {
+            if (getActivity().getSupportFragmentManager().findFragmentByTag("NewsFragment") != null) {
+                list = NewsManager.getInstance(getContext()).getRelated();
+            }else {
+                if (!MainActivity.foundNews.isEmpty()) {
+                    list = MainActivity.foundNews;
+                } else {
+                    list = NewsManager.getInstance(getContext()).getRelated();
+                }
             }
         }
 
@@ -126,6 +138,14 @@ public class NewsContentFragment extends Fragment {
             }
         });
 
+        if(n.getBitmapIMG() == null){
+            if(n.getAuthor().equals("cnn.com")){
+                image.setImageResource(R.drawable.cnn);
+            }
+            if(n.getAuthor().equals("bbc.co.uk")){
+                image.setImageResource(R.drawable.bbc);
+            }
+        }
         image.setImageBitmap(n.getBitmapIMG());
         title.setText(n.getTitle());
         text.setText(n.getText());
@@ -282,15 +302,28 @@ public class NewsContentFragment extends Fragment {
 
 
     public void callAsyncTask(String title){
-        if (!NewsManager.getInstance(getContext()).getSelected().isEmpty()) {
-            NewsManager.getInstance(getContext()).update(3);
-            recyclerView.getAdapter().notifyDataSetChanged();
+        if (code == 1) {
+            if (!NewsManager.getInstance(getContext()).getSelected().isEmpty()) {
+                NewsManager.getInstance(getContext()).update(3);
+                recyclerView.getAdapter().notifyDataSetChanged();
+            }
+        }else {
+            if (!NewsManager.getInstance(getContext()).getRelated().isEmpty()) {
+                NewsManager.getInstance(getContext()).update(3);
+                recyclerView.getAdapter().notifyDataSetChanged();
+            }
         }
         String[] firstTwoWords = title.split("\\s+"); // get first two words from the title
         String first = firstTwoWords[0];
         String second = firstTwoWords[1];
-        new DownloadAndParseTask(getContext()).execute("http://webhose.io/search?token=48ea2974-f86c-4b77-a968-1c9d64845502&" +
-                "format=json&q=" + first + "%20" + second + "%20language%3A(english)%20site%3Acnn.com");
+        if(getArguments().get("author").equals("cnn.com")) {
+            new DownloadAndParseTask(getContext()).execute("http://webhose.io/search?token=48ea2974-f86c-4b77-a968-1c9d64845502&" +
+                    "format=json&q=" + first + "%20" + second + "%20language%3A(english)%20site%3Acnn.com");
+        }
+        else{
+            new DownloadAndParseTask(getContext()).execute("http://webhose.io/search?token=48ea2974-f86c-4b77-a968-1c9d64845502&" +
+                    "format=json&q=" + first + "%20" + second + "%20language%3A(english)%20site%3Abbc.co.uk");
+        }
     }
 
 

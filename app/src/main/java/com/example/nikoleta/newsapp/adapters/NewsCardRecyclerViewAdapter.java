@@ -101,15 +101,14 @@ public class NewsCardRecyclerViewAdapter extends RecyclerView.Adapter<NewsCardRe
                 NewsContentFragment fragment = new NewsContentFragment();
                 Bundle bundle = new Bundle();
                 bundle.putInt("position", position);
+                bundle.putInt("code", 3);
+                bundle.putString("author", list.get(position).getAuthor());
                 fragment.setArguments(bundle);
 
                 FragmentManager manager = ((AppCompatActivity) context).getSupportFragmentManager();
                 manager.beginTransaction()
-                        .add(R.id.layout_main_activity, fragment, "ContentFragment")
+                        .replace(R.id.layout_main_activity, fragment, "ContentFragment")
                         .commit();
-                if(manager.findFragmentByTag("NewsFragment")!= null) {
-                    manager.findFragmentByTag("NewsFragment").getView().setVisibility(View.GONE);
-                }
             }
         });
     }

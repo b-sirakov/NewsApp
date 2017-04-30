@@ -192,6 +192,8 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 NewsContentFragment fragment = new NewsContentFragment();
                 Bundle bundle = new Bundle();
                 bundle.putInt("position", position);
+                bundle.putInt("code", 1);
+                bundle.putString("author", news.get(position).getAuthor());
                 fragment.setArguments(bundle);
 
                 FragmentManager manager = ((AppCompatActivity) context).getSupportFragmentManager();

@@ -91,13 +91,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        FragmentManager fm=getSupportFragmentManager();
-        if((fm.findFragmentByTag("ContentFragment"))!=null){
+        FragmentManager fm = getSupportFragmentManager();
+        if((fm.findFragmentByTag("ContentFragment")) != null){
             closeNewsContentFragment();
             return;
-        }
-        if(fm.findFragmentByTag("NewsFragment")!=null){
-            fm.findFragmentByTag("NewsFragment").getView().setVisibility(View.VISIBLE);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
