@@ -131,8 +131,14 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
             @Override
             public void onClick(View v) {
                 if(DBManager.getInstance(context).getLikedNews().containsKey(news.get(position).getTitle())){
-                    holder.like.setImageResource(R.mipmap.ic_like_purple);
-                    deleteItem(position);
+                    if(code == 0){
+                        holder.like.setImageResource(R.mipmap.ic_like_purple);
+                        NewsManager.getInstance(context).removeNews(news.get(position), 2);
+                    }
+                    else {
+                        holder.like.setImageResource(R.mipmap.ic_like_purple);
+                        deleteItem(position);
+                    }
                 }
                 else{
                     holder.like.setImageResource(R.mipmap.ic_like_red);

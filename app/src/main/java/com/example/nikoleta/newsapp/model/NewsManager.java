@@ -53,6 +53,7 @@ public class NewsManager {
                 DBManager.getInstance(context).addNews(n);
                 break;
             case 3:
+                related.add(n);
                 break;
             default: break;
         }
@@ -89,10 +90,8 @@ public class NewsManager {
     }
     public void update(int code){
         switch (code){
-            case 1:
-                selected.clear(); break;
-            case 2:
-                liked.clear(); break;
+            case 1: selected.clear(); break;
+            case 2: liked.clear(); break;
             case 3: related.clear(); break;
             default: break;
         }
