@@ -1,6 +1,7 @@
 package com.example.nikoleta.newsapp.model;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
 import com.example.nikoleta.newsapp.DBManager;
 
@@ -15,12 +16,18 @@ public class NewsManager {
     private static List<News> selected;
     private static List<News> liked;
     private static List<News> related;
+    private static List<AsyncTask> tasks;
+
+    public List<AsyncTask> getTasks() {
+        return tasks;
+    }
 
     private NewsManager(Context context) {
         this.context = context;
         selected = new ArrayList<>();
         liked = new ArrayList<>(DBManager.getInstance(context).getLikedNews().values());
         related = new ArrayList<>();
+        tasks=new ArrayList<>();
     }
 
     public static NewsManager getInstance(Context context) {

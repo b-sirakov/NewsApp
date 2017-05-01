@@ -2,6 +2,7 @@ package com.example.nikoleta.newsapp.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -96,6 +97,19 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                     MainActivity ma = (MainActivity) context;
                     MainActivity.getClm().setScrollEnabled(false);
                     MainActivity.DownloadSmallAmountOfImages downloadTask = ma.new DownloadSmallAmountOfImages(context, this.news);
+                    for(int i=0;i<NewsManager.getInstance(context).getTasks().size();i++){
+                        if(NewsManager.getInstance(context).getTasks().get(i).getStatus().equals(AsyncTask.Status.FINISHED)){
+                            NewsManager.getInstance(context).getTasks().remove(i);
+                            continue;
+                        }
+                        if(NewsManager.getInstance(context).getTasks().get(i).getStatus().equals(AsyncTask.Status.RUNNING)
+                                ||NewsManager.getInstance(context).getTasks().get(i).getStatus().equals(AsyncTask.Status.PENDING)){
+                            NewsManager.getInstance(context).getTasks().get(i).cancel(true);
+                            NewsManager.getInstance(context).getTasks().remove(i);
+                        }
+                    }
+
+                    NewsManager.getInstance(context).getTasks().add(downloadTask);
                     downloadTask.execute(counter);
                     counter += 5;
                 }
@@ -205,9 +219,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 manager.beginTransaction()
                         .add(R.id.layout_main_activity, fragment, "ContentFragment")
                         .commit();
-                if(manager.findFragmentByTag("NewsFragment")!=null) {
-                    manager.findFragmentByTag("NewsFragment").getView().setVisibility(View.GONE);
-                }
+
             }
         });
     }

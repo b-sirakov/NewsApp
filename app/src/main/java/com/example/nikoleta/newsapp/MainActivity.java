@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity
     private StringHolder stringHolder;
     private MaterialSearchView searchView;
     private TextView titleSection;
+    
 
 
     @Override
@@ -306,7 +308,22 @@ public class MainActivity extends AppCompatActivity
     }
     public void callAsyncTask(String url){
         checkRecyclerViewCondition();
-        new DownloadAndParseTask(MainActivity.this).execute(url);
+        DownloadAndParseTask task = new DownloadAndParseTask(MainActivity.this);
+
+        for(int i=0;i<NewsManager.getInstance(this).getTasks().size();i++){
+            if(NewsManager.getInstance(this).getTasks().get(i).getStatus().equals(AsyncTask.Status.FINISHED)){
+                NewsManager.getInstance(this).getTasks().remove(i);
+                continue;
+            }
+            if(NewsManager.getInstance(this).getTasks().get(i).getStatus().equals(AsyncTask.Status.RUNNING)
+                    ||NewsManager.getInstance(this).getTasks().get(i).getStatus().equals(AsyncTask.Status.PENDING)){
+                NewsManager.getInstance(this).getTasks().get(i).cancel(true);
+                NewsManager.getInstance(this).getTasks().remove(i);
+            }
+        }
+        NewsManager.getInstance(this).getTasks().add(task);
+        task.execute(url);
+
     }
 
     @Override
@@ -315,12 +332,9 @@ public class MainActivity extends AppCompatActivity
         android.support.v4.app.Fragment frag = fm.findFragmentByTag("ContentFragment");
         getSupportFragmentManager().beginTransaction().remove(frag).commit();
 
-        if(fm.findFragmentByTag("NewsFragment")!=null){
-            fm.findFragmentByTag("NewsFragment").getView().setVisibility(View.VISIBLE);
-        }else {
             this.getSupportActionBar().show();
             recyclerView.setVisibility(View.VISIBLE);
-        }
+
 
     }
 
@@ -361,6 +375,20 @@ public class MainActivity extends AppCompatActivity
         return clm;
     }
 
+    public boolean isValidURL(String url) {
+
+        URL u = null;
+
+        try {
+            u = new URL(url);
+        } catch (MalformedURLException e) {
+            return false;
+        }
+
+
+        return true;
+    }
+
     // AsyncTasks
     public class DownloadAndParseTask extends AsyncTask<String,Void,Void> {
         private Context context;
@@ -393,6 +421,9 @@ public class MainActivity extends AppCompatActivity
                         connection.getInputStream()));
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
+                    if(isCancelled()){
+                        return null;
+                    }
                     jsonText.append(inputLine);
                 }
                 in.close();
@@ -408,7 +439,12 @@ public class MainActivity extends AppCompatActivity
                 for(int i = 0; i < posts.length(); i++){
                     JSONObject post = posts.getJSONObject(i);
 
+                    if(isCancelled()){
+                        return null;
+                    }
+
                     boolean isThisTitleRepeated = false;
+                    int indexOldNews=-1;
 
                     for(int a=0;a<titles.size();a++) {
                         String currentTitle = post.getString("title");
@@ -426,6 +462,11 @@ public class MainActivity extends AppCompatActivity
                         if (titles.get(a).contains(post.getString("title")) && !titles.get(a).isEmpty()) {
                             isThisTitleRepeated = true;
                         }
+                        boolean isCurrentNewsURLLinkValid= URLUtil.isValidUrl(post.getJSONObject("thread").getString("main_image"));
+                        boolean isOldNewsURLLinkValid = URLUtil.isValidUrl(NewsManager.getInstance(MainActivity.this).getSelected().get(a).getImageURL());
+
+
+
                     }
                     if(isThisTitleRepeated){
                         continue;
@@ -456,13 +497,14 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            //DownloadImageTask downloadImageTask = new DownloadImageTask();
-            //downloadImageTask.execute();
+
+            if(isCancelled()){
+                return ;
+            }
                 NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, taskNewsList, 0);
                 progBar.setVisibility(View.GONE);
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(clm);
-
         }
 
 //        private class DownloadImageTask extends AsyncTask<Void, Void, Void> {
@@ -535,6 +577,10 @@ public class MainActivity extends AppCompatActivity
             for(int i = position; i <= position+5; i++){
                 Bitmap bitmap = null;
 
+                if(isCancelled()){
+                    return null;
+                }
+
                 if(i >= this.listNews.size()){
                     return null;
                 }
@@ -567,6 +613,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Void aVoid) {
+
             recyclerView.getAdapter().notifyDataSetChanged();
             progBar.setVisibility(View.GONE);
             clm.setScrollEnabled(true);
