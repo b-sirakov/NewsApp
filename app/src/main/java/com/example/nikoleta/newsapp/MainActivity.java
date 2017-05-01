@@ -129,19 +129,16 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if(newText != null && !newText.isEmpty()){
+                query=query.trim();
+                if(query != null && !query.isEmpty()){
                     NewsManager.getInstance(MainActivity.this).update(4);
                     for(News news : NewsManager.getInstance(MainActivity.this).getSelected()){
-                        if(news.getTitle().toLowerCase().contains(newText.toLowerCase())){
+                        if(news.getTitle().toLowerCase().contains(query.toLowerCase())){
                             NewsManager.getInstance(MainActivity.this).addNews(news, 4);
                         }
                     }
@@ -154,6 +151,11 @@ public class MainActivity extends AppCompatActivity
                     recyclerView.setAdapter(adapter);
                 }
                 return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
             }
 
         });
@@ -507,49 +509,6 @@ public class MainActivity extends AppCompatActivity
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(clm);
         }
-
-//        private class DownloadImageTask extends AsyncTask<Void, Void, Void> {
-//
-//            protected Void doInBackground(Void... urls) {
-//                String url = "";
-//                InputStream in=null;
-//
-//                for(int i = 0; i < 5; i++){
-//                    Bitmap bitmap = null;
-//
-//                    if(i >= taskNewsList.size()){
-//                        return null;
-//                    }
-//                    url = taskNewsList.get(i).getImageURL();
-//                    try {
-//                        in = new java.net.URL(url).openStream();
-//                        bitmap = BitmapFactory.decodeStream(in);
-//                    } catch (Exception e) {
-//                        Log.e("Error", ""+i);
-//                        e.printStackTrace();
-//                    }
-//                    if(bitmap!=null) {
-//                        taskNewsList.get(i).setBitmapIMG(Bitmap.createScaledBitmap(bitmap, 360, 360, true));
-//                    }
-//                }
-//                try {
-//                    if(in!=null) {
-//                        in.close();
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                return null;
-//            }
-//
-//            protected void onPostExecute(Void avoid) {
-//                NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, taskNewsList, 0);
-//                progBar.setVisibility(View.GONE);
-//                recyclerView.setAdapter(adapter);
-//                recyclerView.setLayoutManager(clm);
-//            }
-//        }
 
     }
     public class DownloadSmallAmountOfImages extends AsyncTask<Integer,Void,Void>{
