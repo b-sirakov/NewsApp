@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.nikoleta.newsapp.adapters.NewsCardRecyclerViewAdapter;
@@ -52,8 +53,9 @@ public class NewsContentFragment extends Fragment {
     private RecyclerView recyclerView;
     private ImageButton backToMainPageButton;
     private ImageButton like;
+    private ProgressBar progress;
     private List<News> list = new ArrayList<>();
-    int code;
+    private int code;
 
     public NewsContentFragment() {}
 
@@ -64,14 +66,14 @@ public class NewsContentFragment extends Fragment {
 
         code = getArguments().getInt("code");
         if(code == 1) {
-                if (!MainActivity.foundNews.isEmpty()) {
-                    list = MainActivity.foundNews;
+                if (!NewsManager.getInstance(getContext()).getFound().isEmpty()) {
+                    list = NewsManager.getInstance(getContext()).getFound();
                 } else {
                     list = NewsManager.getInstance(getContext()).getSelected();
                 }
         }else {
-                if (!MainActivity.foundNews.isEmpty()) {
-                    list = MainActivity.foundNews;
+                if (!NewsManager.getInstance(getContext()).getFound().isEmpty()) {
+                    list = NewsManager.getInstance(getContext()).getFound();
                 } else {
                     list = NewsManager.getInstance(getContext()).getRelated();
                 }
@@ -87,6 +89,7 @@ public class NewsContentFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_suggested_news);
         recyclerView.setAdapter(new NewsCardRecyclerViewAdapter(getContext(), NewsManager.getInstance(getContext()).getRelated()));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        progress = (ProgressBar) view.findViewById(R.id.progress_bar_news_content_fragment);
 
         backToMainPageButton = (ImageButton) view.findViewById(R.id.back_option);
         backToMainPageButton.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +97,6 @@ public class NewsContentFragment extends Fragment {
             public void onClick(View v) {
                 CommunicatorNewsContentFragment communicator=
                         (CommunicatorNewsContentFragment) getActivity();
-
                 communicator.closeNewsContentFragment();
             }
         });
@@ -166,6 +168,11 @@ public class NewsContentFragment extends Fragment {
             this.jsonText = new StringBuilder("");
             this.taskNewsList = NewsManager.getInstance(getContext()).getRelated();
             clm = MainActivity.getClm();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progress.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -244,7 +251,7 @@ public class NewsContentFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             DownloadImageTask downloadImageTask = new DownloadImageTask();
             downloadImageTask.execute();
-
+            progress.setVisibility(View.GONE);
         }
 
         private class DownloadImageTask extends AsyncTask<Void, Void, Void> {
@@ -288,9 +295,7 @@ public class NewsContentFragment extends Fragment {
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
             }
         }
-
     }
-
 
     public void callAsyncTask(String title){
         if (code == 1) {
@@ -317,6 +322,5 @@ public class NewsContentFragment extends Fragment {
                     "&format=json&q=" + first + "%20" + second + "%20language%3A(english)%20site%3Abbc.co.uk");
         }
     }
-
 
 }

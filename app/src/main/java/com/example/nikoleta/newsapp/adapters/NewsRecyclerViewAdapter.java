@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,18 +81,9 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
     @Override
     public void onBindViewHolder(final NewsRecyclerViewAdapter.NewsViewHolder holder, final int position) {
         final News current = this.news.get(position);
-
-
-
         if(context instanceof MainActivity) {
             if (position >= 0 && position % 5 == 0) {
-
                 if (counter <= position) {
-                    Log.d("TESTA",position+"");
-
-                    if(( (AppCompatActivity) context).getSupportFragmentManager().findFragmentByTag("NewsFragment")!=null){
-
-                    }
                     MainActivity ma = (MainActivity) context;
                     MainActivity.getClm().setScrollEnabled(false);
                     MainActivity.DownloadSmallAmountOfImages downloadTask = ma.new DownloadSmallAmountOfImages(context, this.news);
@@ -108,7 +98,6 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                             NewsManager.getInstance(context).getTasks().remove(i);
                         }
                     }
-
                     NewsManager.getInstance(context).getTasks().add(downloadTask);
                     downloadTask.execute(counter);
                     counter += 5;
@@ -236,6 +225,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         news.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, news.size());
+        notifyDataSetChanged();
     }
     private void addItem(int position){
         String title = NewsManager.getInstance(context).getSelected().get(position).getTitle();

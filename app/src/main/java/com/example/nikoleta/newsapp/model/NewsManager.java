@@ -16,6 +16,7 @@ public class NewsManager {
     private static List<News> selected;
     private static List<News> liked;
     private static List<News> related;
+    private static List<News> found;
     private static List<AsyncTask> tasks;
 
     public List<AsyncTask> getTasks() {
@@ -27,6 +28,7 @@ public class NewsManager {
         selected = new ArrayList<>();
         liked = new ArrayList<>(DBManager.getInstance(context).getLikedNews().values());
         related = new ArrayList<>();
+        found = new ArrayList<>();
         tasks=new ArrayList<>();
     }
 
@@ -46,22 +48,20 @@ public class NewsManager {
     public List<News> getRelated() {
         return Collections.unmodifiableList(related);
     }
+    public List<News> getFound() { return Collections.unmodifiableList(found); }
 
     public void addNews(News n, int code){
         if(!isValid(n)){
             return;
         }
         switch (code){
-            case 1:
-                selected.add(n);
-                break;
+            case 1: selected.add(n); break;
             case 2:
                 liked.add(n);
                 DBManager.getInstance(context).addNews(n);
                 break;
-            case 3:
-                related.add(n);
-                break;
+            case 3: related.add(n); break;
+            case 4: found.add(n); break;
             default: break;
         }
     }
@@ -100,6 +100,7 @@ public class NewsManager {
             case 1: selected.clear(); break;
             case 2: liked.clear(); break;
             case 3: related.clear(); break;
+            case 4: found.clear(); break;
             default: break;
         }
     }
@@ -107,8 +108,8 @@ public class NewsManager {
     public boolean isValid(News n){
         return (n != null);
     }
-    public boolean existsInSelected(News n){ return (selected.contains(n));}
-    public boolean existsInLiked(News n) {return liked.contains(n);}
-    public boolean existsInRelated(News n) {return related.contains(n);}
-
+    public boolean existsInSelected(News n){ return (selected.contains(n)); }
+    public boolean existsInLiked(News n) { return liked.contains(n); }
+    public boolean existsInRelated(News n) { return related.contains(n); }
+    public boolean existsInFound(News n) { return found.contains(n);}
 }

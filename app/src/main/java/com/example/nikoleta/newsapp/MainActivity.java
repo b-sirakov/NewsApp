@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,11 +48,10 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private static CustomLayoutManager clm;
     private ProgressBar progBar;
-    public static ArrayList<News> foundNews = new ArrayList<>();
     private StringHolder stringHolder;
     private MaterialSearchView searchView;
     private TextView titleSection;
-    
+    private static String mainCategory = "BBC";
 
 
     @Override
@@ -70,9 +68,10 @@ public class MainActivity extends AppCompatActivity
         progBar.setVisibility(View.VISIBLE);
         clm = new CustomLayoutManager(this);
         stringHolder = new StringHolder();
-        NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(this, NewsManager.getInstance(MainActivity.this).getSelected(), 0);
+        final NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(this, NewsManager.getInstance(MainActivity.this).getSelected(), 0);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(clm);
+        titleSection = (TextView) findViewById(R.id.section_title_tv);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -89,6 +88,7 @@ public class MainActivity extends AppCompatActivity
         ((TextView)findViewById(R.id.section_title_tv)).setText(stringHolder.getSection());
         callAsyncTask("http://webhose.io/search?token="+getString(R.string.api_key) +
                 "&format=json&q=language%3A(english)%20site%3Abbc.co.uk%20performance_score%3A%3E2%20(site_type%3Anews)");
+        titleSection.setText("BBC News");
     }
 
     @Override
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity
             }
             @Override
             public void onSearchViewClosed() {
-                foundNews.clear();
+                NewsManager.getInstance(MainActivity.this).update(4);
                 //If closed Search View , recycle view will be empty
                 NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, NewsManager.getInstance(MainActivity.this).getSelected(), 0);
                 recyclerView.setAdapter(adapter);
@@ -139,20 +139,18 @@ public class MainActivity extends AppCompatActivity
             @Override
             public boolean onQueryTextChange(String newText) {
                 if(newText != null && !newText.isEmpty()){
-
-                    foundNews.clear();
-
+                    NewsManager.getInstance(MainActivity.this).update(4);
                     for(News news : NewsManager.getInstance(MainActivity.this).getSelected()){
                         if(news.getTitle().toLowerCase().contains(newText.toLowerCase())){
-                            foundNews.add(news);
+                            NewsManager.getInstance(MainActivity.this).addNews(news, 4);
                         }
                     }
-                    NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, foundNews, 0);
+                    NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, NewsManager.getInstance(MainActivity.this).getFound(), 0);
                     recyclerView.setAdapter(adapter);
                 }
                 else{
-                    foundNews.clear();
-                    NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, foundNews, 0);
+                    NewsManager.getInstance(MainActivity.this).update(4);
+                    NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, NewsManager.getInstance(MainActivity.this).getFound(), 0);
                     recyclerView.setAdapter(adapter);
                 }
                 return true;
@@ -239,11 +237,13 @@ public class MainActivity extends AppCompatActivity
                 setCategoriesURLForCNN();
                 fillData("CNN News", "CNN", "http://webhose.io/search?token="+getString(R.string.api_key) +
                         "&format=json&q=language%3A(english)%20site%3Acnn.com%20performance_score%3A%3E2%20(site_type%3Anews)");
+                mainCategory = "CNN";
                 break;
             case R.id.bbc_news:
                 setCategoriesURLForBBC();
                 fillData("BBC News", "BBC", "http://webhose.io/search?token="+getString(R.string.api_key) +
                         "&format=json&q=language%3A(english)%20site%3Abbc.co.uk%20performance_score%3A%3E2%20(site_type%3Anews)");
+                mainCategory = "BBC";
                 break;
             case R.id.business_category:
                 fillData("Business category selected", "Business", stringHolder.getBusinessURL());
@@ -275,8 +275,11 @@ public class MainActivity extends AppCompatActivity
     public void fillData(String toast, String category, String url){
         Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
         stringHolder.setSection(category);
-        titleSection.setText(stringHolder.getSection());
-        callAsyncTask(url);
+        if(category.equals("CNN") || category.equals("BBC")){
+            titleSection.setText(toast);
+        }else {
+            titleSection.setText(mainCategory + " " + stringHolder.getSection() + " News");
+        }        callAsyncTask(url);
     }
     public void fillLikedNewsData(){
         Toast.makeText(this, "Liked News", Toast.LENGTH_SHORT).show();
@@ -475,8 +478,6 @@ public class MainActivity extends AppCompatActivity
                     String title = post.getString("title");
                     String desc = post.getString("text");
                     String urlImage = post.getJSONObject("thread").getString("main_image");
-                    Log.d("KARTINA_URL",title);
-                    Log.d("KARTINA_URL",urlImage);
                     String author = post.getJSONObject("thread").getString("site");
                     String date = post.getJSONObject("thread").getString("published");
                     String original = post.getJSONObject("thread").getString("url");
@@ -552,7 +553,6 @@ public class MainActivity extends AppCompatActivity
 
     }
     public class DownloadSmallAmountOfImages extends AsyncTask<Integer,Void,Void>{
-
         private Context context;
         private List<News> listNews;
 
@@ -589,7 +589,6 @@ public class MainActivity extends AppCompatActivity
                     continue;
                 }
 
-
                 url = this.listNews.get(i).getImageURL();
                 try {
                     in = new java.net.URL(url).openStream();
@@ -613,7 +612,6 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Void aVoid) {
-
             recyclerView.getAdapter().notifyDataSetChanged();
             progBar.setVisibility(View.GONE);
             clm.setScrollEnabled(true);
