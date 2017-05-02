@@ -63,7 +63,7 @@ public class NewsContentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
-        ((AppCompatActivity) getActivity()).findViewById(R.id.search_top_bar).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.search_top_bar).setVisibility(View.GONE);
         code = getArguments().getInt("code");
         if(code == 1) {
                 if (!NewsManager.getInstance(getContext()).getFound().isEmpty()) {
@@ -113,11 +113,11 @@ public class NewsContentFragment extends Fragment {
             public void onClick(View v) {
                 if(DBManager.getInstance(getContext()).isAlreadyAdded(n.getTitle())){
                     like.setImageResource(R.mipmap.ic_like_white);
-                    NewsManager.getInstance(getContext()).removeNews(n, 2);
+                    NewsManager.getInstance(getContext()).removeNews(n, NewsManager.LIKED_NEWS);
                 }
                 else{
                     like.setImageResource(R.mipmap.ic_like_red);
-                    NewsManager.getInstance(getContext()).addNews(n, 2);
+                    NewsManager.getInstance(getContext()).addNews(n, NewsManager.LIKED_NEWS);
                 }
             }
         });
@@ -126,9 +126,6 @@ public class NewsContentFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 new ExtractOrigLinkAndShareTask(getActivity()).execute(new Integer(getArguments().getInt("position")),null,null);
-//                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-//                intent.setType("text/plain");
-//                getContext().startActivity(Intent.createChooser(intent, "Sharing Option"));
             }
         });
 
@@ -236,7 +233,7 @@ public class NewsContentFragment extends Fragment {
                     titles.add(title);
 
                     News news = new News(title,author,desc,urlImage,date,original);
-                    NewsManager.getInstance(getContext()).addNews(news, 3);
+                    NewsManager.getInstance(getContext()).addNews(news, NewsManager.RELATED_NEWS);
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -301,12 +298,12 @@ public class NewsContentFragment extends Fragment {
     public void callAsyncTask(String title){
         if (code == 1) {
             if (!NewsManager.getInstance(getContext()).getSelected().isEmpty()) {
-                NewsManager.getInstance(getContext()).update(3);
+                NewsManager.getInstance(getContext()).update(NewsManager.RELATED_NEWS);
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
         }else {
             if (!NewsManager.getInstance(getContext()).getRelated().isEmpty()) {
-                NewsManager.getInstance(getContext()).update(3);
+                NewsManager.getInstance(getContext()).update(NewsManager.RELATED_NEWS);
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
         }

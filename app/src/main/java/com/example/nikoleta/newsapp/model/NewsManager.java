@@ -11,6 +11,10 @@ import java.util.List;
 
 public class NewsManager {
 
+    public static final int SELECTED_NEWS = 1;
+    public static final int LIKED_NEWS = 2;
+    public static final int RELATED_NEWS = 3;
+    public static final int FOUND_NEWS = 4;
     private Context context;
     private static NewsManager ourInstance = null;
     private static List<News> selected;
@@ -55,20 +59,20 @@ public class NewsManager {
             return;
         }
         switch (code){
-            case 1: selected.add(n); break;
-            case 2:
+            case SELECTED_NEWS: selected.add(n); break;
+            case LIKED_NEWS:
                 liked.add(n);
                 DBManager.getInstance(context).addNews(n);
                 break;
-            case 3: related.add(n); break;
-            case 4: found.add(n); break;
+            case RELATED_NEWS: related.add(n); break;
+            case FOUND_NEWS: found.add(n); break;
             default: break;
         }
     }
     public void addAllNews(List<News> list){
         // add all given news to 'selected' news list
         for(News n : list){
-            addNews(n, 1);
+            addNews(n, SELECTED_NEWS);
         }
     }
     public void removeNews(News n, int code){
@@ -76,18 +80,18 @@ public class NewsManager {
             return;
         }
         switch (code){
-            case 1:
+            case SELECTED_NEWS:
                 if(existsInSelected(n)){
                     selected.remove(n);
                 }
                 break;
-            case 2:
+            case LIKED_NEWS:
                 if(existsInLiked(n)){
                     liked.remove(n);
                     DBManager.getInstance(context).removeNews(n);
                 }
                 break;
-            case 3:
+            case RELATED_NEWS:
                 if(existsInRelated(n)){
                     related.remove(n);
                 }
@@ -97,10 +101,10 @@ public class NewsManager {
     }
     public void update(int code){
         switch (code){
-            case 1: selected.clear(); break;
-            case 2: liked.clear(); break;
-            case 3: related.clear(); break;
-            case 4: found.clear(); break;
+            case SELECTED_NEWS: selected.clear(); break;
+            case LIKED_NEWS: liked.clear(); break;
+            case RELATED_NEWS: related.clear(); break;
+            case FOUND_NEWS: found.clear(); break;
             default: break;
         }
     }

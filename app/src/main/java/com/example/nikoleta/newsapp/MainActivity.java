@@ -14,11 +14,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.URLUtil;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,11 +47,11 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private static CustomLayoutManager clm;
     private ProgressBar progBar;
+    private  ProgressBar progressBar2;
     private StringHolder stringHolder;
     private MaterialSearchView searchView;
     private TextView titleSection;
     private static String mainCategory = "BBC";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +64,13 @@ public class MainActivity extends AppCompatActivity
         searchView = (MaterialSearchView) findViewById(R.id.search_view_main);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_main_activity);
         progBar = (ProgressBar) findViewById(R.id.progress_bar);
-        progBar.setVisibility(View.VISIBLE);
+        progBar.setVisibility(View.GONE);
+        progressBar2 = (ProgressBar) findViewById(R.id.progress_bar2);
+        progressBar2.setVisibility(View.GONE);
         clm = new CustomLayoutManager(this);
         stringHolder = new StringHolder();
-        final NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(this, NewsManager.getInstance(MainActivity.this).getSelected(), 0);
+        final NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(this,
+                NewsManager.getInstance(MainActivity.this).getSelected(), NewsRecyclerViewAdapter.RECYCLER_VIEW_WITH_NO_DELETE_OPTION);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(clm);
         titleSection = (TextView) findViewById(R.id.section_title_tv);
@@ -125,7 +126,8 @@ public class MainActivity extends AppCompatActivity
             public void onSearchViewClosed() {
                 NewsManager.getInstance(MainActivity.this).update(4);
                 //If closed Search View , recycle view will be empty
-                NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, NewsManager.getInstance(MainActivity.this).getSelected(), 0);
+                NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this,
+                        NewsManager.getInstance(MainActivity.this).getSelected(), NewsRecyclerViewAdapter.RECYCLER_VIEW_WITH_NO_DELETE_OPTION);
                 recyclerView.setAdapter(adapter);
             }
         });
@@ -143,12 +145,14 @@ public class MainActivity extends AppCompatActivity
                             NewsManager.getInstance(MainActivity.this).addNews(news, 4);
                         }
                     }
-                    NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, NewsManager.getInstance(MainActivity.this).getFound(), 0);
+                    NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this,
+                            NewsManager.getInstance(MainActivity.this).getFound(), NewsRecyclerViewAdapter.RECYCLER_VIEW_WITH_NO_DELETE_OPTION);
                     recyclerView.setAdapter(adapter);
                 }
                 else{
                     NewsManager.getInstance(MainActivity.this).update(4);
-                    NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, NewsManager.getInstance(MainActivity.this).getFound(), 0);
+                    NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this,
+                            NewsManager.getInstance(MainActivity.this).getFound(), NewsRecyclerViewAdapter.RECYCLER_VIEW_WITH_NO_DELETE_OPTION);
                     recyclerView.setAdapter(adapter);
                 }
                 return true;
@@ -166,12 +170,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void setCategoriesURLForBBC(){
-        //set the URLs for each categort for BBC
+        //set the URLs for each category for BBC
         stringHolder.setBusinessURL(
                 "http://webhose.io/search?token="+getString(R.string.api_key) +
                         "&format=json&q=economy%20language%3A(english)%20site%3Abbc.co.uk%20(site_type%3Anews)"
@@ -290,9 +290,6 @@ public class MainActivity extends AppCompatActivity
         titleSection.setText(stringHolder.getSection());
         checkRecyclerViewCondition();
         NewsManager.getInstance(MainActivity.this).addAllNews(NewsManager.getInstance(MainActivity.this).getLiked());
-        // TODO cloned collection ??
-        // if collection is not cloned -> UnsupportedOperationException
-        // (unmodifiable list is given to remove() method in NewsRecyclerViewAdapter (when you click on delete)
         ArrayList<News> cloned = new ArrayList<>();
         for(News n : NewsManager.getInstance(MainActivity.this).getLiked()){
             try {
@@ -302,7 +299,7 @@ public class MainActivity extends AppCompatActivity
             }
             cloned.add(n);
         }
-        recyclerView.setAdapter(new NewsRecyclerViewAdapter(this, cloned, 1));
+        recyclerView.setAdapter(new NewsRecyclerViewAdapter(this, cloned, NewsRecyclerViewAdapter.RECYCLER_VIEW_WITH_DELETE_OPTION));
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
     public void checkRecyclerViewCondition(){
@@ -469,11 +466,6 @@ public class MainActivity extends AppCompatActivity
                         if (titles.get(a).contains(post.getString("title")) && !titles.get(a).isEmpty()) {
                             isThisTitleRepeated = true;
                         }
-//                        boolean isCurrentNewsURLLinkValid= URLUtil.isValidUrl(post.getJSONObject("thread").getString("main_image"));
-//                        boolean isOldNewsURLLinkValid = URLUtil.isValidUrl(NewsManager.getInstance(MainActivity.this).getSelected().get(a).getImageURL());
-
-
-
                     }
                     if(isThisTitleRepeated){
                         continue;
@@ -487,14 +479,8 @@ public class MainActivity extends AppCompatActivity
                     String original = post.getJSONObject("thread").getString("url");
                     titles.add(title);
 
-                    Log.d("FEED","Post- "+i);
-                    Log.d("FEED","Title- "+title);
-                    Log.d("FEED","DESC- "+(desc.length()>50?desc.substring(0,50):desc));
-                    Log.d("FEED","URL IMAGE- "+urlImage);
-                    Log.d("FEED","ORIG URL- "+original);
-
                     News news = new News(title,author,desc,urlImage,date,original);
-                    NewsManager.getInstance(MainActivity.this).addNews(news, 1);
+                    NewsManager.getInstance(MainActivity.this).addNews(news, NewsManager.SELECTED_NEWS);
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -512,7 +498,8 @@ public class MainActivity extends AppCompatActivity
             if(isCancelled()){
                 return ;
             }
-                NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, taskNewsList, 0);
+                NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this, taskNewsList,
+                        NewsRecyclerViewAdapter.RECYCLER_VIEW_WITH_NO_DELETE_OPTION);
                 progBar.setVisibility(View.GONE);
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(clm);
@@ -531,7 +518,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPreExecute() {
             clm.setScrollEnabled(false);
-            progBar.setVisibility(View.VISIBLE);
+            progressBar2.setVisibility(View.VISIBLE);
             recyclerView.stopScroll();
         }
 
@@ -580,7 +567,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Void aVoid) {
             recyclerView.getAdapter().notifyDataSetChanged();
-            progBar.setVisibility(View.GONE);
+            progressBar2.setVisibility(View.GONE);
             clm.setScrollEnabled(true);
         }
     }

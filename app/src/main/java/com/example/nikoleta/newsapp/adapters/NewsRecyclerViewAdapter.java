@@ -28,6 +28,8 @@ import java.util.List;
 
 public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerViewAdapter.NewsViewHolder>{
 
+    public static final int RECYCLER_VIEW_WITH_NO_DELETE_OPTION = 0;
+    public static final int RECYCLER_VIEW_WITH_DELETE_OPTION = 1;
     private int code;
     private int counter;
     private Context context;
@@ -38,7 +40,6 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         counter=0;
         this.context = context;
         this.news = news;
-        // (code == 0) ? no delete option : delete option
         this.code = code;
     }
 
@@ -141,7 +142,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 if(DBManager.getInstance(context).getLikedNews().containsKey(news.get(position).getTitle())){
                     if(code == 0){
                         holder.like.setImageResource(R.mipmap.ic_like_purple);
-                        NewsManager.getInstance(context).removeNews(news.get(position), 2);
+                        NewsManager.getInstance(context).removeNews(news.get(position), NewsManager.LIKED_NEWS);
                     }
                     else {
                         holder.like.setImageResource(R.mipmap.ic_like_purple);
@@ -221,8 +222,8 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         }
     }
     private void deleteItem(int position){
-        NewsManager.getInstance(context).removeNews(news.get(position), 2);
-        NewsManager.getInstance(context).removeNews(news.get(position), 1);
+        NewsManager.getInstance(context).removeNews(news.get(position), NewsManager.LIKED_NEWS);
+        NewsManager.getInstance(context).removeNews(news.get(position), NewsManager.SELECTED_NEWS);
         news.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, news.size());

@@ -57,17 +57,12 @@ public class NewsCardRecyclerViewAdapter extends RecyclerView.Adapter<NewsCardRe
         final News current = this.list.get(position);
         if(context instanceof MainActivity) {
             if (position >= 0 && position % 5 == 0) {
-
-                if (counter < position) {
-                    counter += 5;
-
-                    if(( (AppCompatActivity) context).getSupportFragmentManager().findFragmentByTag("NewsFragment")!=null){
-
-                    }
+                if (counter <= position) {
                     MainActivity ma = (MainActivity) context;
                     MainActivity.getClm().setScrollEnabled(false);
                     MainActivity.DownloadSmallAmountOfImages downloadTask = ma.new DownloadSmallAmountOfImages(context, list);
                     downloadTask.execute(counter);
+                    counter += 5;
                 }
             }
         }
@@ -93,7 +88,6 @@ public class NewsCardRecyclerViewAdapter extends RecyclerView.Adapter<NewsCardRe
         return list.size();
     }
 
-    // TODO remove copy-paste method
     private void readMore(View view, final int position){
         view.setOnClickListener(new View.OnClickListener() {
             @Override
