@@ -63,7 +63,7 @@ public class NewsContentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
-
+        ((AppCompatActivity) getActivity()).findViewById(R.id.search_top_bar).setVisibility(View.GONE);
         code = getArguments().getInt("code");
         if(code == 1) {
                 if (!NewsManager.getInstance(getContext()).getFound().isEmpty()) {
@@ -102,6 +102,7 @@ public class NewsContentFragment extends Fragment {
         });
 
         final News n = list.get(getArguments().getInt("position"));
+        Log.d("DABE","FRAGMENT POSITION-"+getArguments().getInt("position")+"");
 
         like = (ImageButton) view.findViewById(R.id.like_button_news_content_fragment);
         if(DBManager.getInstance(getContext()).isAlreadyAdded(n.getTitle())){

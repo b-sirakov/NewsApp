@@ -222,6 +222,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
     }
     private void deleteItem(int position){
         NewsManager.getInstance(context).removeNews(news.get(position), 2);
+        NewsManager.getInstance(context).removeNews(news.get(position), 1);
         news.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, news.size());

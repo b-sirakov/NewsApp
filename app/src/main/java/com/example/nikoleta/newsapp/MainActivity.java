@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -337,6 +338,7 @@ public class MainActivity extends AppCompatActivity
         android.support.v4.app.Fragment frag = fm.findFragmentByTag("ContentFragment");
         getSupportFragmentManager().beginTransaction().remove(frag).commit();
 
+            this.findViewById(R.id.search_top_bar).setVisibility(View.VISIBLE);
             this.getSupportActionBar().show();
             recyclerView.setVisibility(View.VISIBLE);
 
@@ -467,8 +469,8 @@ public class MainActivity extends AppCompatActivity
                         if (titles.get(a).contains(post.getString("title")) && !titles.get(a).isEmpty()) {
                             isThisTitleRepeated = true;
                         }
-                        boolean isCurrentNewsURLLinkValid= URLUtil.isValidUrl(post.getJSONObject("thread").getString("main_image"));
-                        boolean isOldNewsURLLinkValid = URLUtil.isValidUrl(NewsManager.getInstance(MainActivity.this).getSelected().get(a).getImageURL());
+//                        boolean isCurrentNewsURLLinkValid= URLUtil.isValidUrl(post.getJSONObject("thread").getString("main_image"));
+//                        boolean isOldNewsURLLinkValid = URLUtil.isValidUrl(NewsManager.getInstance(MainActivity.this).getSelected().get(a).getImageURL());
 
 
 
@@ -484,6 +486,12 @@ public class MainActivity extends AppCompatActivity
                     String date = post.getJSONObject("thread").getString("published");
                     String original = post.getJSONObject("thread").getString("url");
                     titles.add(title);
+
+                    Log.d("FEED","Post- "+i);
+                    Log.d("FEED","Title- "+title);
+                    Log.d("FEED","DESC- "+(desc.length()>50?desc.substring(0,50):desc));
+                    Log.d("FEED","URL IMAGE- "+urlImage);
+                    Log.d("FEED","ORIG URL- "+original);
 
                     News news = new News(title,author,desc,urlImage,date,original);
                     NewsManager.getInstance(MainActivity.this).addNews(news, 1);
