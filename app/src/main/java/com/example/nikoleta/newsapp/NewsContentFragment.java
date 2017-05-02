@@ -55,6 +55,7 @@ public class NewsContentFragment extends Fragment {
     private ImageButton like;
     private ProgressBar progress;
     private List<News> list = new ArrayList<>();
+    private TextView relatedNews;
     private int code;
 
     public NewsContentFragment() {}
@@ -85,6 +86,7 @@ public class NewsContentFragment extends Fragment {
         text = (TextView) view.findViewById(R.id.text_news_content_fragment);
         date = (TextView) view.findViewById(R.id.date_news_content_fragment);
         original = (TextView) view.findViewById(R.id.link_news_content_fragment);
+        relatedNews = (TextView) view.findViewById(R.id.related_news_text_view);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_suggested_news);
         recyclerView.setAdapter(new NewsCardRecyclerViewAdapter(getContext(), NewsManager.getInstance(getContext()).getRelated()));
@@ -102,7 +104,6 @@ public class NewsContentFragment extends Fragment {
         });
 
         final News n = list.get(getArguments().getInt("position"));
-        Log.d("DABE","FRAGMENT POSITION-"+getArguments().getInt("position")+"");
 
         like = (ImageButton) view.findViewById(R.id.like_button_news_content_fragment);
         if(DBManager.getInstance(getContext()).isAlreadyAdded(n.getTitle())){
@@ -136,8 +137,10 @@ public class NewsContentFragment extends Fragment {
             if(n.getAuthor().equals("bbc.co.uk")){
                 image.setImageResource(R.drawable.bbc);
             }
+        }else {
+            image.setImageBitmap(n.getBitmapIMG());
         }
-        image.setImageBitmap(n.getBitmapIMG());
+
         title.setText(n.getTitle());
         text.setText(n.getText());
 
@@ -247,9 +250,15 @@ public class NewsContentFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            progress.setVisibility(View.GONE);
+            if(NewsManager.getInstance(getContext()).getRelated().isEmpty()){
+                recyclerView.setVisibility(View.GONE);
+                relatedNews.setText("No related news found");
+                return;
+            }
+            relatedNews.setText("Related news");
             DownloadImageTask downloadImageTask = new DownloadImageTask();
             downloadImageTask.execute();
-            progress.setVisibility(View.GONE);
         }
 
         private class DownloadImageTask extends AsyncTask<Void, Void, Void> {

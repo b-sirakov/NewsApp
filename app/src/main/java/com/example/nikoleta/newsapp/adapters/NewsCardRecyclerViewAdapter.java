@@ -68,7 +68,7 @@ public class NewsCardRecyclerViewAdapter extends RecyclerView.Adapter<NewsCardRe
         }
 
         holder.title.setText(current.getTitle());
-        if(current.getBitmapIMG()==null){
+        if(current.getBitmapIMG() == null){
             if(current.getAuthor().equals("cnn.com")) {
                 holder.image.setImageResource(R.drawable.cnn);
             }

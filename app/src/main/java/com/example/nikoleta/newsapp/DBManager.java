@@ -87,7 +87,6 @@ public class DBManager extends SQLiteOpenHelper{
     public void addNews(News news){
         if(isAlreadyAdded(news.getTitle())){
             removeNews(news);
-            Toast.makeText(context, "Unliked", Toast.LENGTH_SHORT).show();
             return;
         }
         ContentValues content = new ContentValues();
@@ -113,7 +112,6 @@ public class DBManager extends SQLiteOpenHelper{
         return getLikedNews().containsKey(title);
     }
     public  void removeNews(News news){
-        // TODO no button added in news_row.xml
         if(!likedNews.containsKey(news.getTitle())){
             return;
         }
