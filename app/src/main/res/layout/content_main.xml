@@ -9,6 +9,12 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.nikoleta.newsapp.MainActivity"
     tools:showIn="@layout/app_bar_main">
+
+    <Button
+        android:id="@+id/invisible_button"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
     <TextView
         android:id="@+id/section_title_tv"
         android:gravity="center"

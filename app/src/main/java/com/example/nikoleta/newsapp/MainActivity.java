@@ -14,9 +14,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setLayoutManager(clm);
         titleSection = (TextView) findViewById(R.id.section_title_tv);
 
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -101,6 +104,11 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
+        if(searchView.isSearchOpen()){
+            searchView.closeSearch();
+            return;
+        }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -113,7 +121,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        getMenuInflater().inflate(R.menu.menu_item,menu);
+        //getMenuInflater().inflate(R.menu.menu_item,menu);
         MenuItem item = menu.findItem(R.id.action_search);
 
         searchView.setMenuItem(item);
@@ -121,10 +129,15 @@ public class MainActivity extends AppCompatActivity
         searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
             @Override
             public void onSearchViewShown() {
+                MainActivity.this.getSupportActionBar().hide();
+                findViewById(R.id.invisible_button).setVisibility(View.INVISIBLE);
             }
             @Override
             public void onSearchViewClosed() {
                 NewsManager.getInstance(MainActivity.this).update(4);
+                MainActivity.this.getSupportActionBar().show();
+
+                findViewById(R.id.invisible_button).setVisibility(View.GONE);
                 //If closed Search View , recycle view will be empty
                 NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(MainActivity.this,
                         NewsManager.getInstance(MainActivity.this).getSelected(), NewsRecyclerViewAdapter.RECYCLER_VIEW_WITH_NO_DELETE_OPTION);
@@ -137,6 +150,14 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public boolean onQueryTextSubmit(String query) {
+
+                searchView.clearFocus();
+//                View view = getCurrentFocus();
+//                if (view != null) {
+//                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+//                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+//                }
+
                 query=query.trim();
                 if(query != null && !query.isEmpty()){
                     NewsManager.getInstance(MainActivity.this).update(4);
@@ -164,6 +185,8 @@ public class MainActivity extends AppCompatActivity
             }
 
         });
+
+        //Log.d("OPEN",searchView.isSearchOpen()+"");
 
         return true;
     }
@@ -336,8 +359,14 @@ public class MainActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction().remove(frag).commit();
 
             this.findViewById(R.id.search_top_bar).setVisibility(View.VISIBLE);
+           // if(findViewById(R.id.invisible_button).getVisibility()==)
+        recyclerView.setVisibility(View.VISIBLE);
+        if(searchView.isSearchOpen()){
+            findViewById(R.id.invisible_button).setVisibility(View.INVISIBLE);
+            return;
+        }
             this.getSupportActionBar().show();
-            recyclerView.setVisibility(View.VISIBLE);
+
 
 
     }

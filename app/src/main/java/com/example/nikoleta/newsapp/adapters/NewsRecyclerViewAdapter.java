@@ -7,9 +7,13 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -22,6 +26,7 @@ import com.example.nikoleta.newsapp.R;
 import com.example.nikoleta.newsapp.model.News;
 import com.example.nikoleta.newsapp.model.NewsManager;
 import com.example.nikoleta.newsapp.tasks.ExtractOrigLinkAndShareTask;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -204,7 +209,14 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 bundle.putInt("code", 1);
                 bundle.putString("author", news.get(position).getAuthor());
                 fragment.setArguments(bundle);
-
+                View view = ((AppCompatActivity) context).getCurrentFocus();
+                if (view != null) {
+                    InputMethodManager imm = (InputMethodManager)((AppCompatActivity) context).getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+//                MaterialSearchView sv= (MaterialSearchView) ((AppCompatActivity) context).findViewById(R.id.search_view_main);
+//                Log.d("OPEN",sv.isSearchOpen()+"");
+                ((AppCompatActivity) context).findViewById(R.id.invisible_button).setVisibility(View.GONE);
                 FragmentManager manager = ((AppCompatActivity) context).getSupportFragmentManager();
                 manager.beginTransaction()
                         .add(R.id.layout_main_activity, fragment, "ContentFragment")
