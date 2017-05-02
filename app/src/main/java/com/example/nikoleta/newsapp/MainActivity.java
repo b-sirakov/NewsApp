@@ -1,6 +1,7 @@
 package com.example.nikoleta.newsapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -14,11 +15,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -195,10 +194,14 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        else if (id == R.id.action_feedback){
+         if (id == R.id.action_feedback){
+             Intent intent = new Intent(Intent.ACTION_SENDTO);
+             intent.setType("text/html");
+             intent.putExtra(Intent.EXTRA_EMAIL, "emailaddress@emailaddress.com");
+             intent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
+             intent.putExtra(Intent.EXTRA_TEXT, "I'm email body.");
+             intent.setType("text/plain");
+             startActivity(Intent.createChooser(intent, "Send Email"));
             return true;
         }
 
