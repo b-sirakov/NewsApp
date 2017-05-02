@@ -8,9 +8,6 @@
         <item
             android:id="@+id/cnn_news"
             android:title="@string/cnn_news" />
-        <item
-            android:id="@+id/fox_news"
-            android:title="@string/fox_news"/>
     </group>
 
     <item android:title="@string/categories">
